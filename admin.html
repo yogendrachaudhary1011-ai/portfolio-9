@@ -81,6 +81,7 @@
       display: flex;
       align-items: center;
       gap: 12px;
+      flex-wrap: wrap;
     }
     .btn {
       display: inline-flex;
@@ -150,8 +151,9 @@
       border-radius: 9999px;
       font-size: 12px;
       font-weight: 600;
-      background: #1b212c;
+      background: #10141b;
       border: 1px solid var(--card-border);
+      color: var(--text-muted);
     }
     .status-dot {
       width: 8px;
@@ -159,52 +161,57 @@
       border-radius: 50%;
       background: #64748b;
     }
-    .status-dot.active { background: var(--success); }
+    .status-dot.active {
+      background: var(--success);
+      box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+    }
     .status-dot.saving {
-      background: #f59e0b;
-      box-shadow: 0 0 8px #f59e0b;
-      animation: pulseDot 0.8s ease-in-out infinite;
+      background: var(--accent);
+      box-shadow: 0 0 10px rgba(255, 77, 0, 0.4);
+      animation: pulse 1s infinite alternate;
     }
-    .status-dot.error { background: var(--danger); }
-    @keyframes pulseDot {
-      0%, 100% { opacity: 0.35; transform: scale(0.85); }
-      50% { opacity: 1; transform: scale(1.25); }
+    .status-dot.error {
+      background: var(--danger);
+      box-shadow: 0 0 10px rgba(239, 68, 68, 0.4);
     }
-    @keyframes spin {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
+    @keyframes pulse {
+      0% { opacity: 0.4; }
+      100% { opacity: 1; }
     }
     .tabs {
       display: flex;
       gap: 8px;
-      border-bottom: 1px solid var(--card-border);
       margin-bottom: 24px;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 12px;
       overflow-x: auto;
-      padding-bottom: 4px;
     }
     .tab-btn {
-      padding: 10px 18px;
-      border-radius: 8px 8px 0 0;
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--text-muted);
       background: transparent;
-      border: none;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
       cursor: pointer;
-      position: relative;
-      transition: color 0.15s ease;
+      transition: all 0.15s ease;
       white-space: nowrap;
     }
-    .tab-btn:hover { color: var(--text); }
-    .tab-btn.active {
+    .tab-btn:hover {
       color: var(--text);
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-bottom-color: var(--card-bg);
-      margin-bottom: -1px;
+      background: rgba(255, 255, 255, 0.04);
     }
-    .tab-content { display: none; }
-    .tab-content.active { display: block; }
+    .tab-btn.active {
+      color: #fff;
+      background: var(--accent);
+    }
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
     .card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
@@ -219,6 +226,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 12px;
     }
     .card-description {
       font-size: 13px;
@@ -235,13 +243,20 @@
       flex-direction: column;
       gap: 6px;
     }
-    .form-group.full { grid-column: 1 / -1; }
+    .form-group.full {
+      grid-column: 1 / -1;
+    }
     label {
       font-size: 12px;
       font-weight: 600;
       color: #cbd5e1;
       text-transform: uppercase;
       letter-spacing: 0.04em;
+    }
+    .field-hint {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
     }
     input[type="text"], input[type="email"], input[type="url"], textarea, select {
       background: #0f1319;
@@ -258,9 +273,10 @@
       outline: none;
       border-color: var(--accent);
     }
-    textarea { min-height: 90px; resize: vertical; }
-    
-    /* Toggle switch styles */
+    textarea {
+      min-height: 90px;
+      resize: vertical;
+    }
     .switch-row {
       display: flex;
       align-items: center;
@@ -308,19 +324,17 @@
       position: absolute;
       cursor: pointer;
       top: 0; left: 0; right: 0; bottom: 0;
-      background-color: #2a3447;
-      transition: .25s;
-      border-radius: 26px;
+      background-color: #232936;
+      transition: 0.2s;
+      border-radius: 34px;
     }
     .slider:before {
       position: absolute;
       content: "";
-      height: 20px;
-      width: 20px;
-      left: 3px;
-      bottom: 3px;
+      height: 18px; width: 18px;
+      left: 4px; bottom: 4px;
       background-color: white;
-      transition: .25s;
+      transition: 0.2s;
       border-radius: 50%;
     }
     input:checked + .slider {
@@ -329,33 +343,34 @@
     input:checked + .slider:before {
       transform: translateX(22px);
     }
-
     .item-card {
       background: #0f1319;
       border: 1px solid var(--card-border);
       border-radius: 10px;
       padding: 16px;
       margin-bottom: 16px;
-      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
     }
     .item-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 12px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid #1a202c;
-    }
-    .item-controls {
-      display: flex;
-      align-items: center;
-      gap: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      padding-bottom: 10px;
     }
     .item-number {
       font-size: 12px;
       font-weight: 700;
       color: var(--accent);
       text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .item-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
     .toast {
       position: fixed;
@@ -363,21 +378,101 @@
       right: 24px;
       padding: 12px 20px;
       border-radius: 8px;
-      font-size: 14px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      font-size: 13px;
       font-weight: 600;
-      color: #fff;
-      background: #1e293b;
-      border: 1px solid #334155;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-      display: none;
       z-index: 100;
-      animation: fadeIn 0.2s ease;
+      display: none;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
     }
-    .toast.success { background: #065f46; border-color: #059669; }
-    .toast.error { background: #991b1b; border-color: #dc2626; }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(8px); }
-      to { opacity: 1; transform: translateY(0); }
+    .toast.success {
+      border-color: var(--success);
+      color: var(--success);
+    }
+    .toast.error {
+      border-color: var(--danger);
+      color: var(--danger);
+    }
+
+    /* Images & Media custom uploader styles */
+    .image-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 20px;
+    }
+    .image-card {
+      background: #0f1319;
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      transition: border-color 0.15s ease;
+    }
+    .image-card:hover {
+      border-color: #334155;
+    }
+    .image-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .image-card-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .image-card-badge {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.05);
+      padding: 3px 8px;
+      border-radius: 4px;
+    }
+    .image-preview-box {
+      width: 100%;
+      height: 180px;
+      border-radius: 8px;
+      border: 1px dashed var(--card-border);
+      background: #090c10;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      position: relative;
+    }
+    .image-preview-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.2s ease;
+    }
+    .image-preview-box.contain-fit img {
+      object-fit: contain;
+      background: #090c10;
+    }
+    .image-preview-box.favicon-fit {
+      height: 100px;
+      width: 100px;
+      margin: 0 auto;
+    }
+    .image-preview-box.favicon-fit img {
+      width: 64px;
+      height: 64px;
+      object-fit: contain;
+    }
+    .image-card-actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
     }
   </style>
 </head>
@@ -388,45 +483,31 @@
     <a href="/" class="brand">
       <div class="brand-logo">YC</div>
       <div>
-        <div class="brand-title">Portfolio Admin Panel</div>
-        <div class="brand-subtitle">Firebase Database & Live Content Management</div>
+        <div class="brand-title">Yogendra Chaudhary</div>
+        <div class="brand-subtitle">Portfolio Administration</div>
       </div>
     </a>
     <div class="nav-actions">
-      <div class="status-badge" id="autosave-header-badge" style="background: #111620; border-color: #334155; padding: 6px 12px;">
-        <span class="status-dot active" id="autosave-header-dot"></span>
-        <span id="autosave-header-text">Auto-Save: Ready</span>
-      </div>
-      <a href="/" target="_blank" class="btn btn-secondary">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-        View Live Site
-      </a>
-      <button id="save-btn" class="btn btn-primary" onclick="savePortfolioContent(false)">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
-        Save to Database
-      </button>
-    </div>
-  </div>
-</header>
-
-<main>
-  <!-- Connection & Auth Status Banner -->
-  <div class="banner">
-    <div style="display: flex; align-items: center; gap: 16px; flex-wrap: wrap;">
-      <div class="status-badge" id="db-status-badge">
-        <span class="status-dot active" id="db-status-dot"></span>
-        <span id="db-status-text">Firestore Database Connected</span>
-      </div>
-      <div class="status-badge" id="autosave-banner-badge">
-        <span class="status-dot active" id="autosave-banner-dot"></span>
-        <span id="autosave-banner-text">Auto-Save to Database: Active</span>
-      </div>
-      <div class="status-badge" id="auth-status-badge">
-        <span class="status-dot" id="auth-status-dot"></span>
+      <div class="status-badge">
+        <div id="auth-status-dot" class="status-dot"></div>
         <span id="auth-status-text">Checking Auth...</span>
       </div>
-    </div>
-    <div id="auth-actions" style="display: flex; gap: 8px;">
+      <div class="status-badge">
+        <div id="db-status-dot" class="status-dot"></div>
+        <span id="db-status-text">Connecting to Firestore...</span>
+      </div>
+      <div class="status-badge">
+        <div id="autosave-header-dot" class="status-dot active"></div>
+        <span id="autosave-header-text">Synced</span>
+      </div>
+      <button id="save-btn" class="btn btn-primary" onclick="savePortfolioContent(false)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+        Save Changes
+      </button>
+      <a href="/" target="_blank" class="btn btn-secondary">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+        View Live Website
+      </a>
       <button id="login-btn" class="btn btn-secondary" onclick="signInAdmin()">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.761H12.545z"/></svg>
         Sign in with Google
@@ -434,18 +515,36 @@
       <button id="logout-btn" class="btn btn-danger" style="display:none;" onclick="signOutAdmin()">Sign Out</button>
     </div>
   </div>
+</header>
+
+<main>
+  <!-- Auto-save Banner -->
+  <div class="banner">
+    <div>
+      <div style="font-weight: 700; font-size: 15px; margin-bottom: 2px;">⚡ Live Database Synchronization</div>
+      <div style="font-size: 13px; color: var(--text-muted);">Any change made here updates your website instantly. Stored in your Firestore Database and available live.</div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <div class="status-badge">
+        <div id="autosave-banner-dot" class="status-dot active"></div>
+        <span id="autosave-banner-text">Auto-Save: Ready</span>
+      </div>
+    </div>
+  </div>
 
   <!-- Navigation Tabs -->
   <div class="tabs">
     <button class="tab-btn active" onclick="switchTab('sections')">Section Visibility</button>
     <button class="tab-btn" onclick="switchTab('profile')">Hero & Identity</button>
+    <button class="tab-btn" onclick="switchTab('texts')">Website Texts</button>
+    <button class="tab-btn" onclick="switchTab('images')">Images & Media</button>
     <button class="tab-btn" onclick="switchTab('contact')">Contact & Links</button>
-    <button class="tab-btn" onclick="switchTab('projects')">Featured Projects (3)</button>
+    <button class="tab-btn" onclick="switchTab('projects')">Featured Projects</button>
     <button class="tab-btn" onclick="switchTab('experience')">Work Experience</button>
     <button class="tab-btn" onclick="switchTab('skills')">Skills & Process</button>
   </div>
 
-  <!-- TAB 0: Section Visibility (ENABLE/DISABLE SECTIONS) -->
+  <!-- TAB 0: Section Visibility -->
   <div id="tab-sections" class="tab-content active">
     <div class="card">
       <div class="card-title">Page Section Visibility Controls</div>
@@ -485,7 +584,7 @@
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
             Design Process & Methodology Section
           </div>
-          <div class="switch-desc">Displays process philosophy and 4 skill cards (Design Systems, UX, UI, Delivery).</div>
+          <div class="switch-desc">Displays process philosophy and skill cards.</div>
         </div>
         <label class="switch">
           <input type="checkbox" id="sec-process" checked>
@@ -499,7 +598,7 @@
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
             Work Experience & Roles Section
           </div>
-          <div class="switch-desc">Displays career positions (Aarawan Media, SOMTU, etc.) and metrics ticker.</div>
+          <div class="switch-desc">Displays career positions and education timeline.</div>
         </div>
         <label class="switch">
           <input type="checkbox" id="sec-experience" checked>
@@ -513,7 +612,7 @@
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
             About Section
           </div>
-          <div class="switch-desc">Displays detailed biographical notes, background description, and career philosophy.</div>
+          <div class="switch-desc">Displays biographical story, portrait photo, and career background.</div>
         </div>
         <label class="switch">
           <input type="checkbox" id="sec-about" checked>
@@ -527,7 +626,7 @@
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
             Contact & Footer Section
           </div>
-          <div class="switch-desc">Displays bottom email touchpoint, social media handles, resume download button, and copyright.</div>
+          <div class="switch-desc">Displays email link, resume download, LinkedIn touchpoint, and copyright note.</div>
         </div>
         <label class="switch">
           <input type="checkbox" id="sec-footer" checked>
@@ -541,27 +640,31 @@
   <div id="tab-profile" class="tab-content">
     <div class="card">
       <div class="card-title">Personal Identity & Hero Information</div>
-      <div class="card-description">Customize the core branding and headline displayed on the portfolio.</div>
+      <div class="card-description">Customize the primary personal branding and headline displayed across the portfolio.</div>
       <div class="form-grid">
         <div class="form-group">
           <label>Full Display Name</label>
           <input type="text" id="field-name" placeholder="Yogendra Chaudhary" value="Yogendra Chaudhary">
+          <div class="field-hint">Primary name rendered across website headers, metadata, and case studies.</div>
         </div>
         <div class="form-group">
-          <label>Giant Hero Name (Ticker Display)</label>
+          <label>Giant Hero Name (Display Heading)</label>
           <input type="text" id="field-heroName" placeholder="yogendra" value="yogendra">
+          <div class="field-hint">Rendered in the giant typography ticker in the hero section.</div>
         </div>
         <div class="form-group">
           <label>Professional Role / Title</label>
           <input type="text" id="field-title" placeholder="UI/UX Designer | Product Designer" value="UI/UX Designer | Product Designer">
+          <div class="field-hint">Your primary professional title and specialization.</div>
         </div>
         <div class="form-group">
           <label>Primary Location</label>
           <input type="text" id="field-location" placeholder="Kathmandu, Nepal" value="Kathmandu, Nepal">
+          <div class="field-hint">Displayed in header badges and about information.</div>
         </div>
         <div class="form-group full">
-          <label>Hero Tagline</label>
-          <textarea id="field-tagline" placeholder="UI/UX Designer & Product Designer, crafting intuitive software interfaces and user-centered workflows.">UI/UX Designer & Product Designer, crafting intuitive software interfaces and user-centered workflows.</textarea>
+          <label>Hero Tagline / Value Proposition</label>
+          <textarea id="field-tagline" placeholder="UI/UX & Product Designer, crafting intuitive software interfaces and user-centered workflows.">UI/UX & Product Designer, crafting intuitive software interfaces and user-centered workflows.</textarea>
         </div>
         <div class="form-group full">
           <label>Bio / Profile Introduction</label>
@@ -571,7 +674,239 @@
     </div>
   </div>
 
-  <!-- TAB 2: Contact & Links -->
+  <!-- TAB 2: Website Texts Customization -->
+  <div id="tab-texts" class="tab-content">
+    <div class="card">
+      <div class="card-title">Hero & Loading Screen Texts</div>
+      <div class="card-description">Customize copy for the landing hero, intro greeting, and loading animation screen.</div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Greeting Intro</label>
+          <input type="text" id="field-text-greeting" placeholder="Hello! 👋 I'm" value="Hello! 👋 I'm">
+          <div class="field-hint">Small greeting badge above the hero name.</div>
+        </div>
+        <div class="form-group">
+          <label>Loading Screen Name Display</label>
+          <input type="text" id="field-text-loadingScreen" placeholder="Yogendra Chaudhary" value="Yogendra Chaudhary">
+          <div class="field-hint">Name animated character-by-character on initial site load.</div>
+        </div>
+        <div class="form-group full">
+          <label>Dark Mode Announcement / Banner</label>
+          <input type="text" id="field-text-announcement" placeholder="Switch your system to Dark Mode for a better experience" value="Switch your system to Dark Mode for a better experience">
+          <div class="field-hint">Notification banner displayed on the loading overlay.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">About Section & Narrative Story</div>
+      <div class="card-description">Customize the biographical storytelling and detailed narrative in the About section.</div>
+      <div class="form-grid">
+        <div class="form-group full">
+          <label>Main About Headline</label>
+          <input type="text" id="field-text-aboutHeadline" placeholder="An IDF certified Product Designer, crafting experiences that flow." value="An IDF certified Product Designer, crafting experiences that flow.">
+        </div>
+        <div class="form-group full">
+          <label>Detailed About Story / Philosophy</label>
+          <textarea id="field-text-aboutStory" style="min-height: 120px;" placeholder="I make complicated things feel simple, and good products feel a little magical. 5+ years, 15+ clients, and a mild obsession with making software feel effortless to use.">I make complicated things feel simple, and good products feel a little magical. 5+ years, 15+ clients, and a mild obsession with making software feel effortless to use.</textarea>
+          <div class="field-hint">Core paragraph describing your design mindset and experience.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Process & Footer Texts</div>
+      <div class="card-description">Customize philosophy statements, process principles, and footer notes.</div>
+      <div class="form-grid">
+        <div class="form-group full">
+          <label>Design Process Philosophy</label>
+          <input type="text" id="field-text-processDesc" placeholder="Design is not just what it looks like and feels like. Design is how it works." value="Design is not just what it looks like and feels like. Design is how it works.">
+        </div>
+        <div class="form-group">
+          <label>Contact CTA Button</label>
+          <input type="text" id="field-text-contactCta" placeholder="Let's Connect ↗" value="Let's Connect ↗">
+        </div>
+        <div class="form-group">
+          <label>Footer Handmade Note</label>
+          <input type="text" id="field-text-footerNote" placeholder="Handmade with ❤️ in Nepal" value="Handmade with ❤️ in Nepal">
+        </div>
+        <div class="form-group full">
+          <label>Footer Copyright Line</label>
+          <input type="text" id="field-text-footerCopyright" placeholder="© 2026 Yogendra Chaudhary. All rights reserved." value="© 2026 Yogendra Chaudhary. All rights reserved.">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 3: Images & Media Customization -->
+  <div id="tab-images" class="tab-content">
+    <div class="card">
+      <div class="card-title">
+        <span>Portfolio Images & Visual Assets</span>
+      </div>
+      <div class="card-description">Upload images from your device or paste any image URL. Images are saved to your database and applied to the live site.</div>
+      
+      <div class="image-grid">
+        <!-- Avatar / Profile Photo -->
+        <div class="image-card">
+          <div class="image-card-header">
+            <div class="image-card-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+              Profile / Avatar Photo
+            </div>
+            <span class="image-card-badge">About Section</span>
+          </div>
+          <div class="image-preview-box">
+            <img id="preview-img-avatar" src="framerusercontent.com/images/sHYLC5GLvyuqZRvQ521YBEuOos5bd4.png" alt="Avatar Preview" onerror="this.src='framerusercontent.com/images/sHYLC5GLvyuqZRvQ521YBEuOos5bd4.png'">
+          </div>
+          <div class="form-group">
+            <label>Image URL</label>
+            <input type="text" id="field-img-avatar" placeholder="Paste image URL or upload below">
+          </div>
+          <div class="image-card-actions">
+            <button type="button" class="btn btn-secondary" onclick="document.getElementById('file-img-avatar').click()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+              Upload Photo
+            </button>
+            <input type="file" id="file-img-avatar" accept="image/*" style="display:none" onchange="handleImageFile(this, 'field-img-avatar', 'preview-img-avatar')">
+            <button type="button" class="btn btn-secondary" style="font-size:11px;" onclick="resetImage('field-img-avatar', 'preview-img-avatar', 'framerusercontent.com/images/sHYLC5GLvyuqZRvQ521YBEuOos5bd4.png')">Reset</button>
+          </div>
+        </div>
+
+        <!-- Project 1 Image (Numira) -->
+        <div class="image-card">
+          <div class="image-card-header">
+            <div class="image-card-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+              Project 1: Numira
+            </div>
+            <span class="image-card-badge">Featured Work</span>
+          </div>
+          <div class="image-preview-box">
+            <img id="preview-img-project1" src="framerusercontent.com/images/JFlxur51MvdnXVwJcmocQgdbRz8f210.png" alt="Project 1 Preview" onerror="this.src='framerusercontent.com/images/JFlxur51MvdnXVwJcmocQgdbRz8f210.png'">
+          </div>
+          <div class="form-group">
+            <label>Image URL</label>
+            <input type="text" id="field-img-project1" placeholder="Paste image URL or upload below">
+          </div>
+          <div class="image-card-actions">
+            <button type="button" class="btn btn-secondary" onclick="document.getElementById('file-img-project1').click()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+              Upload Image
+            </button>
+            <input type="file" id="file-img-project1" accept="image/*" style="display:none" onchange="handleImageFile(this, 'field-img-project1', 'preview-img-project1')">
+            <button type="button" class="btn btn-secondary" style="font-size:11px;" onclick="resetImage('field-img-project1', 'preview-img-project1', 'framerusercontent.com/images/JFlxur51MvdnXVwJcmocQgdbRz8f210.png')">Reset</button>
+          </div>
+        </div>
+
+        <!-- Project 2 Image (SOMTU) -->
+        <div class="image-card">
+          <div class="image-card-header">
+            <div class="image-card-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+              Project 2: SOMTU
+            </div>
+            <span class="image-card-badge">Featured Work</span>
+          </div>
+          <div class="image-preview-box">
+            <img id="preview-img-project2" src="framerusercontent.com/images/3uqfpcZtUI0KOAlHMVjpapzRl8c7f5.png" alt="Project 2 Preview" onerror="this.src='framerusercontent.com/images/3uqfpcZtUI0KOAlHMVjpapzRl8c7f5.png'">
+          </div>
+          <div class="form-group">
+            <label>Image URL</label>
+            <input type="text" id="field-img-project2" placeholder="Paste image URL or upload below">
+          </div>
+          <div class="image-card-actions">
+            <button type="button" class="btn btn-secondary" onclick="document.getElementById('file-img-project2').click()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+              Upload Image
+            </button>
+            <input type="file" id="file-img-project2" accept="image/*" style="display:none" onchange="handleImageFile(this, 'field-img-project2', 'preview-img-project2')">
+            <button type="button" class="btn btn-secondary" style="font-size:11px;" onclick="resetImage('field-img-project2', 'preview-img-project2', 'framerusercontent.com/images/3uqfpcZtUI0KOAlHMVjpapzRl8c7f5.png')">Reset</button>
+          </div>
+        </div>
+
+        <!-- Project 3 Image (The Vedic Sewa) -->
+        <div class="image-card">
+          <div class="image-card-header">
+            <div class="image-card-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+              Project 3: Vedic Sewa
+            </div>
+            <span class="image-card-badge">Featured Work</span>
+          </div>
+          <div class="image-preview-box">
+            <img id="preview-img-project3" src="framerusercontent.com/images/Qz0PfMLlkZPgfWPWG0w1Aj6I8c7f5.png" alt="Project 3 Preview" onerror="this.src='framerusercontent.com/images/Qz0PfMLlkZPgfWPWG0w1Aj6I8c7f5.png'">
+          </div>
+          <div class="form-group">
+            <label>Image URL</label>
+            <input type="text" id="field-img-project3" placeholder="Paste image URL or upload below">
+          </div>
+          <div class="image-card-actions">
+            <button type="button" class="btn btn-secondary" onclick="document.getElementById('file-img-project3').click()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+              Upload Image
+            </button>
+            <input type="file" id="file-img-project3" accept="image/*" style="display:none" onchange="handleImageFile(this, 'field-img-project3', 'preview-img-project3')">
+            <button type="button" class="btn btn-secondary" style="font-size:11px;" onclick="resetImage('field-img-project3', 'preview-img-project3', 'framerusercontent.com/images/Qz0PfMLlkZPgfWPWG0w1Aj6I8c7f5.png')">Reset</button>
+          </div>
+        </div>
+
+        <!-- Social Share OG Image -->
+        <div class="image-card">
+          <div class="image-card-header">
+            <div class="image-card-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+              Social Share Card (OG)
+            </div>
+            <span class="image-card-badge">SEO & Links</span>
+          </div>
+          <div class="image-preview-box">
+            <img id="preview-img-ogImage" src="framerusercontent.com/images/mE8wUY9AKZAw29HtTltTNM78Y.png" alt="OG Preview" onerror="this.src='framerusercontent.com/images/mE8wUY9AKZAw29HtTltTNM78Y.png'">
+          </div>
+          <div class="form-group">
+            <label>Image URL</label>
+            <input type="text" id="field-img-ogImage" placeholder="Paste image URL or upload below">
+          </div>
+          <div class="image-card-actions">
+            <button type="button" class="btn btn-secondary" onclick="document.getElementById('file-img-ogImage').click()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+              Upload Card
+            </button>
+            <input type="file" id="file-img-ogImage" accept="image/*" style="display:none" onchange="handleImageFile(this, 'field-img-ogImage', 'preview-img-ogImage')">
+            <button type="button" class="btn btn-secondary" style="font-size:11px;" onclick="resetImage('field-img-ogImage', 'preview-img-ogImage', 'framerusercontent.com/images/mE8wUY9AKZAw29HtTltTNM78Y.png')">Reset</button>
+          </div>
+        </div>
+
+        <!-- Favicon -->
+        <div class="image-card">
+          <div class="image-card-header">
+            <div class="image-card-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+              Browser Favicon (Tab Icon)
+            </div>
+            <span class="image-card-badge">Browser Tab</span>
+          </div>
+          <div class="image-preview-box favicon-fit contain-fit">
+            <img id="preview-img-favicon" src="framerusercontent.com/images/HBHFPi1YvOmewl8NVUc4Ff7IXk.png" alt="Favicon Preview" onerror="this.src='framerusercontent.com/images/HBHFPi1YvOmewl8NVUc4Ff7IXk.png'">
+          </div>
+          <div class="form-group">
+            <label>Icon URL</label>
+            <input type="text" id="field-img-favicon" placeholder="Paste icon URL or upload below">
+          </div>
+          <div class="image-card-actions">
+            <button type="button" class="btn btn-secondary" onclick="document.getElementById('file-img-favicon').click()">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+              Upload Icon
+            </button>
+            <input type="file" id="file-img-favicon" accept="image/*" style="display:none" onchange="handleImageFile(this, 'field-img-favicon', 'preview-img-favicon')">
+            <button type="button" class="btn btn-secondary" style="font-size:11px;" onclick="resetImage('field-img-favicon', 'preview-img-favicon', 'framerusercontent.com/images/HBHFPi1YvOmewl8NVUc4Ff7IXk.png')">Reset</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 4: Contact & Links -->
   <div id="tab-contact" class="tab-content">
     <div class="card">
       <div class="card-title">Contact Information & Social Links</div>
@@ -597,19 +932,19 @@
     </div>
   </div>
 
-  <!-- TAB 3: Projects -->
+  <!-- TAB 5: Projects -->
   <div id="tab-projects" class="tab-content">
     <div class="card">
       <div class="card-title">
         <span>Selected Featured Case Studies</span>
         <button class="btn btn-secondary" onclick="addProjectItem()">+ Add Project</button>
       </div>
-      <div class="card-description">Update project case studies shown on the homepage. You can enable or disable individual projects.</div>
+      <div class="card-description">Update project case studies shown on the homepage. You can enable, disable, or modify individual projects.</div>
       <div id="projects-container"></div>
     </div>
   </div>
 
-  <!-- TAB 4: Experience -->
+  <!-- TAB 6: Experience -->
   <div id="tab-experience" class="tab-content">
     <div class="card">
       <div class="card-title">
@@ -621,7 +956,7 @@
     </div>
   </div>
 
-  <!-- TAB 5: Skills -->
+  <!-- TAB 7: Skills -->
   <div id="tab-skills" class="tab-content">
     <div class="card">
       <div class="card-title">
@@ -650,13 +985,32 @@ const defaultContent = {
   name: "Yogendra Chaudhary",
   heroName: "yogendra",
   title: "UI/UX Designer | Product Designer",
-  tagline: "UI/UX & Product Designer, crafting intuitive software interfaces and user-centered workflows.",
-  bio: "Proficient in Figma, usability testing, and collaborating with developers to translate designs into functional products. Based in Kathmandu, Nepal.",
+  tagline: "UI/UX & Product Designer focused on creating intuitive, functional, and user-friendly digital experiences.",
+  bio: "I turn complex workflows into simple, meaningful digital experiences. From accounting software to university websites and service platforms, I focus on usability, clear interactions, and thoughtful design details that make products easier to use.",
   location: "Kathmandu, Nepal",
   email: "yogendrachaudhary2061@gmail.com",
   phone: "9843688407",
   linkedin: "https://www.linkedin.com/in/yogendrach",
   resumeUrl: "/assets/aistudio/Yogendra_Chaudhary_CV_cc247373.pdf",
+  texts: {
+    greeting: "Hello! 👋 I'm",
+    loadingScreen: "Yogendra Chaudhary",
+    heroAnnouncement: "Switch your system to Dark Mode for a better experience",
+    aboutHeadline: "An IDF certified Product Designer, crafting experiences that flow.",
+    aboutStory: "I make complicated things feel simple, and good products feel a little magical. 5+ years, 15+ clients, and a mild obsession with making software feel effortless to use.",
+    processDesc: "Design is not just what it looks like and feels like. Design is how it works.",
+    contactCta: "Let's Connect ↗",
+    footerNote: "Handmade with ❤️ in Nepal",
+    footerCopyright: "© 2026 Yogendra Chaudhary. All rights reserved."
+  },
+  images: {
+    avatar: "framerusercontent.com/images/sHYLC5GLvyuqZRvQ521YBEuOos5bd4.png",
+    project1: "framerusercontent.com/images/JFlxur51MvdnXVwJcmocQgdbRz8f210.png",
+    project2: "framerusercontent.com/images/3uqfpcZtUI0KOAlHMVjpapzRl8c7f5.png",
+    project3: "framerusercontent.com/images/Qz0PfMLlkZPgfWPWG0w1Aj6I8c7f5.png",
+    ogImage: "framerusercontent.com/images/mE8wUY9AKZAw29HtTltTNM78Y.png",
+    favicon: "framerusercontent.com/images/HBHFPi1YvOmewl8NVUc4Ff7IXk.png"
+  },
   sectionVisibility: {
     header: true,
     work: true,
@@ -669,28 +1023,28 @@ const defaultContent = {
     {
       id: "p1",
       title: "Numira",
-      subtitle: "Numira Accounting & Business Management Software",
-      problem: "Traditional business software suffered from convoluted workflows, overwhelming menus, and error-prone voucher reversals in dense financial environments.",
-      impact: "Designed status-based menus, vouchers with reversal, chart of accounts, and type-to-confirm dialogs for irreversible financial operations.",
-      tags: "Product Design, SaaS & ERP",
+      subtitle: "Numira — Accounting & Business Management",
+      problem: "Designing clearer workflows for accounting and business management, making complex financial tasks easier to understand and navigate.",
+      impact: "I designed key areas of Numira, including customer and supplier management, purchasing, accounting, and settings. My work covered purchase orders, bills, payments, vouchers, fiscal-year closing, user roles, and security flows. The focus was on organizing information-heavy screens, maintaining consistent interaction patterns, and making important financial actions clear and predictable.",
+      tags: "Product Design / Accounting / User Flows / UI Components",
       enabled: true
     },
     {
       id: "p2",
-      title: "SOMTU Website",
-      subtitle: "School of Management, Tribhuvan University Web Portal",
-      problem: "Students, researchers, and faculty needed an integrated portal for notices, events, and an intuitive 7-step program registration flow across mobile and desktop.",
-      impact: "Covered 87 screens and 81 component variants across desktop & mobile, with full design specs ensuring seamless developer handoff.",
-      tags: "Web Platform, Design System",
+      title: "SOMTU",
+      subtitle: "SOMTU — School of Management, Tribhuvan University",
+      problem: "A complete responsive university website designed to make academic information, resources, and registration easier to access.",
+      impact: "I designed the SOMTU website across desktop and mobile, creating 87 screens and 81 component variants. The project included academic programs, notices, events, research, resources, and a seven-step registration process. I also developed a comprehensive design reference to support consistency and developer handoff.",
+      tags: "Web Design / Responsive UI / Design System / Registration Flow",
       enabled: true
     },
     {
       id: "p3",
       title: "The Vedic Sewa",
-      subtitle: "Spiritual Services & Consultation Platform",
-      problem: "Spiritual consultation and puja bookings required dynamic status-driven actions, verified guru credentials, and transparent e-commerce refund workflows.",
-      impact: "Designed puja, yatra, and consultation booking flows, live consultation, shop with returns/refunds, and guru document verification across all key states.",
-      tags: "Product Design, Marketplace",
+      subtitle: "The Vedic Sewa — Spiritual Services Platform",
+      problem: "Designing a connected platform that simplifies spiritual service bookings and interactions between customers and gurus.",
+      impact: "I designed customer and guru experiences for puja, yatra, and consultation bookings across web and mobile. The work included user profiles, booking management, a shop and purchase flow, refunds, livestreams, notifications, and verification processes. Special attention was given to status-based actions, clear navigation, and handling empty, pending, locked, and error states.",
+      tags: "UI/UX Design / Booking Flows / Web & Mobile / Interaction Design",
       enabled: true
     }
   ],
@@ -723,26 +1077,26 @@ const defaultContent = {
   skills: [
     {
       id: "s1",
-      title: "Design Systems",
-      description: "Reusable components, design consistency, 81+ component variants, and tokenized UI patterns that keep interfaces coherent.",
+      title: "UX Design",
+      description: "User Flows / Workflow Design / Usability Testing / Interaction Design",
       enabled: true
     },
     {
       id: "s2",
-      title: "UX & Usability",
-      description: "User flows, workflow mapping, and usability testing to ground every design decision in real feedback, usability reviews, and clarity.",
+      title: "UI Design",
+      description: "Interface Design / Typography / Layout / Visual Hierarchy / UI Components",
       enabled: true
     },
     {
       id: "s3",
-      title: "UI Design",
-      description: "Interface design, typography, layout hierarchy, and UI components prioritizing clarity, usability, and consistent interaction patterns.",
+      title: "Design Systems",
+      description: "Reusable Components / Component Consistency / UI States / Design Iteration",
       enabled: true
     },
     {
       id: "s4",
-      title: "Delivery & Tools",
-      description: "Proficient in Figma, Adobe Photoshop, and Illustrator, delivering comprehensive developer handoff specs and collaborating with engineers.",
+      title: "Tools & Collaboration",
+      description: "Figma / Adobe Photoshop / Adobe Illustrator / Developer Handoff / Cross-functional Collaboration",
       enabled: true
     }
   ]
@@ -833,6 +1187,7 @@ async function loadContent() {
 }
 
 function populateForm(data) {
+  // Identity
   document.getElementById('field-name').value = data.name || '';
   document.getElementById('field-heroName').value = data.heroName || 'yogendra';
   document.getElementById('field-title').value = data.title || '';
@@ -843,6 +1198,27 @@ function populateForm(data) {
   document.getElementById('field-phone').value = data.phone || '';
   document.getElementById('field-linkedin').value = data.linkedin || '';
   document.getElementById('field-resumeUrl').value = data.resumeUrl || '';
+
+  // Custom Website Texts
+  const texts = data.texts || {};
+  document.getElementById('field-text-greeting').value = texts.greeting || data.heroIntro || defaultContent.texts.greeting;
+  document.getElementById('field-text-loadingScreen').value = texts.loadingScreen || data.name || defaultContent.texts.loadingScreen;
+  document.getElementById('field-text-announcement').value = texts.heroAnnouncement || data.heroAnnouncement || defaultContent.texts.heroAnnouncement;
+  document.getElementById('field-text-aboutHeadline').value = texts.aboutHeadline || defaultContent.texts.aboutHeadline;
+  document.getElementById('field-text-aboutStory').value = texts.aboutStory || defaultContent.texts.aboutStory;
+  document.getElementById('field-text-processDesc').value = texts.processDesc || defaultContent.texts.processDesc;
+  document.getElementById('field-text-contactCta').value = texts.contactCta || defaultContent.texts.contactCta;
+  document.getElementById('field-text-footerNote').value = texts.footerNote || defaultContent.texts.footerNote;
+  document.getElementById('field-text-footerCopyright').value = texts.footerCopyright || defaultContent.texts.footerCopyright;
+
+  // Custom Website Images
+  const imgs = data.images || {};
+  setImgFieldAndPreview('field-img-avatar', 'preview-img-avatar', imgs.avatar, defaultContent.images.avatar);
+  setImgFieldAndPreview('field-img-project1', 'preview-img-project1', imgs.project1, defaultContent.images.project1);
+  setImgFieldAndPreview('field-img-project2', 'preview-img-project2', imgs.project2, defaultContent.images.project2);
+  setImgFieldAndPreview('field-img-project3', 'preview-img-project3', imgs.project3, defaultContent.images.project3);
+  setImgFieldAndPreview('field-img-ogImage', 'preview-img-ogImage', imgs.ogImage, defaultContent.images.ogImage);
+  setImgFieldAndPreview('field-img-favicon', 'preview-img-favicon', imgs.favicon, defaultContent.images.favicon);
 
   // Section visibility checkboxes
   const sec = data.sectionVisibility || defaultContent.sectionVisibility;
@@ -856,6 +1232,15 @@ function populateForm(data) {
   renderProjects(data.projects || defaultContent.projects);
   renderExperience(data.experience || defaultContent.experience);
   renderSkills(data.skills || defaultContent.skills);
+}
+
+function setImgFieldAndPreview(inputId, previewId, val, defaultVal) {
+  const input = document.getElementById(inputId);
+  const preview = document.getElementById(previewId);
+  if (input) input.value = val || '';
+  if (preview) {
+    preview.src = val || defaultVal;
+  }
 }
 
 function collectFormData() {
@@ -903,6 +1288,27 @@ function collectFormData() {
     footer: document.getElementById('sec-footer')?.checked !== false
   };
 
+  const texts = {
+    greeting: document.getElementById('field-text-greeting')?.value.trim() || 'Hello! 👋 I\'m',
+    loadingScreen: document.getElementById('field-text-loadingScreen')?.value.trim() || 'Yogendra Chaudhary',
+    heroAnnouncement: document.getElementById('field-text-announcement')?.value.trim() || 'Switch your system to Dark Mode for a better experience',
+    aboutHeadline: document.getElementById('field-text-aboutHeadline')?.value.trim() || 'An IDF certified Product Designer, crafting experiences that flow.',
+    aboutStory: document.getElementById('field-text-aboutStory')?.value.trim() || '',
+    processDesc: document.getElementById('field-text-processDesc')?.value.trim() || '',
+    contactCta: document.getElementById('field-text-contactCta')?.value.trim() || 'Let\'s Connect ↗',
+    footerNote: document.getElementById('field-text-footerNote')?.value.trim() || 'Handmade with ❤️ in Nepal',
+    footerCopyright: document.getElementById('field-text-footerCopyright')?.value.trim() || '© 2026 Yogendra Chaudhary. All rights reserved.'
+  };
+
+  const images = {
+    avatar: document.getElementById('field-img-avatar')?.value.trim() || defaultContent.images.avatar,
+    project1: document.getElementById('field-img-project1')?.value.trim() || defaultContent.images.project1,
+    project2: document.getElementById('field-img-project2')?.value.trim() || defaultContent.images.project2,
+    project3: document.getElementById('field-img-project3')?.value.trim() || defaultContent.images.project3,
+    ogImage: document.getElementById('field-img-ogImage')?.value.trim() || defaultContent.images.ogImage,
+    favicon: document.getElementById('field-img-favicon')?.value.trim() || defaultContent.images.favicon
+  };
+
   return {
     name: document.getElementById('field-name')?.value.trim() || 'Yogendra Chaudhary',
     heroName: (document.getElementById('field-heroName')?.value.trim() || 'yogendra').toLowerCase(),
@@ -915,6 +1321,8 @@ function collectFormData() {
     linkedin: document.getElementById('field-linkedin')?.value.trim() || '',
     resumeUrl: document.getElementById('field-resumeUrl')?.value.trim() || '',
     sectionVisibility,
+    texts,
+    images,
     projects,
     experience,
     skills,
@@ -1007,7 +1415,6 @@ async function performDatabaseSave(isAuto = true) {
     }
   } catch (err) {
     console.error('Database save error:', err);
-    // If client SDK failed, ensure backend API saves
     try {
       const res = await fetch('/api/content', {
         method: 'POST',
@@ -1036,6 +1443,35 @@ async function performDatabaseSave(isAuto = true) {
 
 window.savePortfolioContent = async function(isAuto = false) {
   await performDatabaseSave(isAuto);
+};
+
+window.handleImageFile = function(inputEl, targetInputId, previewImgId) {
+  const file = inputEl.files[0];
+  if (!file) return;
+  if (file.size > 5 * 1024 * 1024) {
+    showToast('File size is larger than 5MB. Please choose a smaller image.', 'error');
+    return;
+  }
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const dataUrl = e.target.result;
+    const targetInput = document.getElementById(targetInputId);
+    if (targetInput) targetInput.value = dataUrl;
+    const preview = document.getElementById(previewImgId);
+    if (preview) preview.src = dataUrl;
+    triggerAutoSave(100);
+    showToast('Image uploaded and applied! Auto-saving to database...', 'success');
+  };
+  reader.readAsDataURL(file);
+};
+
+window.resetImage = function(targetInputId, previewImgId, defaultUrl) {
+  const targetInput = document.getElementById(targetInputId);
+  if (targetInput) targetInput.value = '';
+  const preview = document.getElementById(previewImgId);
+  if (preview) preview.src = defaultUrl;
+  triggerAutoSave(100);
+  showToast('Image reset to original.', 'success');
 };
 
 function renderProjects(projects) {
@@ -1313,7 +1749,9 @@ window.removeSkill = function(idx) {
 window.switchTab = function(tabName) {
   document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
   document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-  event.target.classList.add('active');
+  if (event && event.target && event.target.classList) {
+    event.target.classList.add('active');
+  }
   const target = document.getElementById('tab-' + tabName);
   if (target) target.classList.add('active');
 };
@@ -1322,6 +1760,14 @@ window.switchTab = function(tabName) {
 document.addEventListener('input', (e) => {
   if (isLoadingContent) return;
   if (e.target && e.target.matches('input[type="text"], input[type="email"], input[type="url"], textarea')) {
+    // If input changed an image field, update preview live
+    if (e.target.id && e.target.id.startsWith('field-img-')) {
+      const previewId = 'preview-' + e.target.id.replace('field-', '');
+      const previewEl = document.getElementById(previewId);
+      if (previewEl && e.target.value.trim()) {
+        previewEl.src = e.target.value.trim();
+      }
+    }
     triggerAutoSave(400);
   }
 });

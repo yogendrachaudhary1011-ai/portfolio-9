@@ -630,6 +630,8 @@
           node.nodeValue = v.replaceAll('[Shubham Prakash]', '[' + CV.name + ']');
         } else if (v.trim() === 'Shubham') {
           node.nodeValue = CV.shortName || 'Yogendra';
+        } else if (v.trim() === 'Prakash') {
+          node.nodeValue = 'Chaudhary';
         } else if (v.includes('your.email@example.com')) {
           node.nodeValue = v.replaceAll('your.email@example.com', CV.email);
         } else if (v.includes('Senior Product Designer')) {
@@ -652,26 +654,90 @@
           node.nodeValue = v.replaceAll('Bengaluru', CV.location || 'Nepal');
         }
       }
+
+      // 4. Dynamic Announcement & Texts Sync
+      const announcement = CV.texts?.heroAnnouncement || CV.heroAnnouncement;
+      if (announcement) {
+        document.querySelectorAll('.framer-1ochvl6 p').forEach(p => { p.textContent = announcement; });
+      }
+      const greeting = CV.texts?.heroIntro || CV.heroIntro;
+      if (greeting) {
+        document.querySelectorAll('.framer-1elp66r p').forEach(p => { p.textContent = greeting; });
+      }
+      const footerNote = CV.texts?.footerNote || CV.footerNote || CV.footer?.copyright;
+      if (footerNote) {
+        document.querySelectorAll('.framer-11f5jx5 p').forEach(p => { p.textContent = footerNote; });
+      }
+      const aboutStory = CV.texts?.aboutStory || CV.aboutStory || CV.bio;
+      if (aboutStory) {
+        document.querySelectorAll('.framer-ljx6pi p').forEach(p => { p.textContent = aboutStory; });
+      }
+
+      // 5. Dynamic Images Sync
+      if (CV.images) {
+        if (CV.images.avatar) {
+          document.querySelectorAll('img[src*="sHYLC5GLvyuqZRvQ"]').forEach(img => {
+            img.src = CV.images.avatar;
+            img.srcset = '';
+          });
+        }
+        if (CV.images.project1) {
+          document.querySelectorAll('img[src*="JFlxur51MvdnXVwJcmocQgdbRz8"], img[src*="KXWpMKybppkBnLsGiuMplKlAf8"]').forEach(img => {
+            img.src = CV.images.project1;
+            img.srcset = '';
+          });
+        }
+        if (CV.images.project2) {
+          document.querySelectorAll('img[src*="3uqfpcZtUI0KOAlHMVjpapzRl8"]').forEach(img => {
+            img.src = CV.images.project2;
+            img.srcset = '';
+          });
+        }
+        if (CV.images.project3) {
+          document.querySelectorAll('img[src*="Qz0PfMLlkZPgfWPWG0w1Aj6I8"]').forEach(img => {
+            img.src = CV.images.project3;
+            img.srcset = '';
+          });
+        }
+        if (CV.images.favicon) {
+          document.querySelectorAll('link[rel="icon"]').forEach(l => { l.href = CV.images.favicon; });
+        }
+        if (CV.images.ogImage) {
+          document.querySelectorAll('meta[property="og:image"], meta[name="twitter:image"]').forEach(m => { m.content = CV.images.ogImage; });
+        }
+      }
+
+      // 6. Loading screen watcher
+      const loadingName = CV.texts?.loadingScreen || CV.name || 'Yogendra Chaudhary';
+      document.querySelectorAll('.framer-r5wbtm-container').forEach(container => {
+        try {
+          const txt = (container.textContent || '').replace(/\s+/g, ' ').trim();
+          if (txt.includes('Shubham') || txt.includes('Prakash') || (txt !== loadingName && txt.length > 0)) {
+            const [firstName, ...rest] = loadingName.split(' ');
+            const lastName = rest.join(' ') || 'Chaudhary';
+            const wg0 = container.querySelector('[data-wg="0"]');
+            const wg2 = container.querySelector('[data-wg="2"]');
+            if (wg0 && wg2) {
+              const createLetterSpans = word => Array.from(word).map(char => {
+                const s = document.createElement('span');
+                s.style.display = 'inline-block';
+                s.style.willChange = 'transform, opacity, color, filter';
+                s.textContent = char;
+                return s;
+              });
+              wg0.innerHTML = '';
+              createLetterSpans(firstName).forEach(s => wg0.appendChild(s));
+              wg2.innerHTML = '';
+              createLetterSpans(lastName).forEach(s => wg2.appendChild(s));
+            }
+          }
+        } catch(err) {}
+      });
     } catch(e) {
       console.warn('Sync note:', e);
     } finally {
       isSyncing = false;
     }
-  }
-
-  // Floating admin shortcut button
-  function addAdminButton() {
-    if (!document.body || document.getElementById('floating-admin-btn')) return;
-    try {
-      const btn = document.createElement('a');
-      btn.id = 'floating-admin-btn';
-      btn.href = '/admin';
-      btn.style.cssText = 'position:fixed;bottom:24px;left:24px;z-index:99999;display:inline-flex;align-items:center;gap:8px;background:rgba(20,24,31,0.92);color:#f0f2f5;border:1px solid #334155;padding:8px 14px;border-radius:9999px;font-size:12px;font-weight:600;text-decoration:none;box-shadow:0 6px 20px rgba(0,0,0,0.5);backdrop-filter:blur(10px);transition:all 0.2s;font-family:sans-serif;';
-      btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ff4d00" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg><span>Admin Panel</span>';
-      btn.onmouseover = () => { btn.style.borderColor = '#ff4d00'; btn.style.transform = 'translateY(-2px)'; };
-      btn.onmouseout = () => { btn.style.borderColor = '#334155'; btn.style.transform = 'none'; };
-      document.body.appendChild(btn);
-    } catch(e) {}
   }
 
   // Live Firebase Firestore Sync
@@ -718,15 +784,13 @@
       .catch(() => {});
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => { syncContent(); addAdminButton(); });
-  } else {
-    syncContent();
-    addAdminButton();
-  }
-  window.addEventListener('load', () => { syncContent(); addAdminButton(); connectLiveSync(); });
-  setTimeout(() => { syncContent(); addAdminButton(); }, 150);
-  setTimeout(() => { syncContent(); addAdminButton(); }, 600);
+  // Connect live database sync
+  connectLiveSync();
+
+  // Run content synchronization after hydration to guarantee zero React hydration mismatch
+  document.addEventListener('framer:pageview', () => { setTimeout(syncContent, 40); }, { once: true });
+  window.addEventListener('load', () => { setTimeout(syncContent, 100); });
+  setTimeout(syncContent, 500);
 
   try {
     let timeout = null;
@@ -735,7 +799,7 @@
         timeout = setTimeout(() => {
           timeout = null;
           syncContent();
-        }, 100);
+        }, 120);
       }
     });
     if (document.body) {
@@ -747,6 +811,13 @@
     }
   } catch(e) {}
 })();
+</script>
+<script type="importmap">
+{
+  "imports": {
+    "https://framerusercontent.com/sites/T282UK9GvvPX6FlvEkNSw/shared-lib.DfJHkx5b.mjs": "/assets/framer/shared-lib.DfJHkx5b.mjs"
+  }
+}
 </script>
 </head>
 <body>
