@@ -152,7 +152,7 @@ const server = createServer(async (req, res) => {
   const decoded = decodeURIComponent(raw);
 
   // File upload endpoint for images and videos
-  if (decoded === '/api/upload') {
+  if (decoded === '/api/upload' || decoded === '/api/upload/') {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -166,13 +166,15 @@ const server = createServer(async (req, res) => {
       const chunks = [];
       let totalLength = 0;
       req.on('data', chunk => { chunks.push(chunk); totalLength += chunk.length; });
-      req.on('error', err => { res.writeHead(500, { 'Content-Type': 'application/json' }).end(JSON.stringify({ error: err.message })); });
+      req.on('error', err => {
+        if (!res.headersSent) res.writeHead(500, { 'Content-Type': 'application/json' }).end(JSON.stringify({ error: err.message }));
+      });
       req.on('end', async () => {
         try {
           const body = Buffer.concat(chunks, totalLength).toString('utf8');
-          const parsed = JSON.parse(body);
+          const parsed = JSON.parse(body || '{}');
           const rawName = (parsed.filename || 'media').replace(/[^a-zA-Z0-9._-]/g, '_');
-          const ext = extname(rawName) || '.png';
+          const ext = (extname(rawName) || '.png').toLowerCase();
           const baseName = rawName.slice(0, rawName.length - ext.length) || 'media';
           const filename = `${Date.now()}_${baseName}${ext}`;
 
@@ -195,7 +197,10 @@ const server = createServer(async (req, res) => {
           res.writeHead(200, { 'Content-Type': 'application/json' });
           res.end(JSON.stringify({ success: true, url, filename }));
         } catch (e) {
-          res.writeHead(400, { 'Content-Type': 'application/json' }).end(JSON.stringify({ error: e.message }));
+          if (!res.headersSent) {
+            res.writeHead(400, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ error: e.message }));
+          }
         }
       });
       return;

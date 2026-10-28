@@ -1590,38 +1590,104 @@ window.savePortfolioContent = async function(isAuto = false) {
   await performDatabaseSave(isAuto);
 };
 
-window.handleImageFile = async function(inputEl, targetInputId, previewImgId) {
-  const file = inputEl.files[0];
-  if (!file) return;
-  if (file.size > 25 * 1024 * 1024) {
-    showToast('File size is larger than 25MB. Please choose a smaller image.', 'error');
-    return;
+async function optimizeImageIfNeeded(file) {
+  if (!file || !file.type || !file.type.startsWith('image/') || file.type.includes('svg') || file.type.includes('gif')) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve({ dataUrl: reader.result, name: file.name });
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
   }
-  showToast('Uploading image to cloud storage...', 'info');
-  const reader = new FileReader();
-  reader.onload = async function(e) {
-    try {
-      const res = await fetch('/api/upload', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ filename: file.name, data: e.target.result })
-      });
-      const data = await res.json();
-      if (data && data.url) {
-        const targetInput = document.getElementById(targetInputId);
-        if (targetInput) targetInput.value = data.url;
-        const preview = document.getElementById(previewImgId);
-        if (preview) preview.src = data.url;
-        triggerAutoSave(100);
-        showToast('Image uploaded and applied! Auto-saving to cloud database...', 'success');
-      } else {
-        showToast('Upload error: ' + (data?.error || 'Failed'), 'error');
-      }
-    } catch(err) {
-      showToast('Upload failed: ' + err.message, 'error');
+
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const rawDataUrl = e.target.result;
+      const img = new Image();
+      img.onload = () => {
+        try {
+          const maxDim = 2048;
+          let { width, height } = img;
+          if (width > maxDim || height > maxDim) {
+            if (width > height) {
+              height = Math.round((height * maxDim) / width);
+              width = maxDim;
+            } else {
+              width = Math.round((width * maxDim) / height);
+              height = maxDim;
+            }
+          }
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+
+          const outputType = 'image/jpeg';
+          const optimizedDataUrl = canvas.toDataURL(outputType, 0.90);
+          const baseName = (file.name || 'image').replace(/\.[^/.]+$/, '').replace(/[^a-zA-Z0-9._-]/g, '_');
+          resolve({ dataUrl: optimizedDataUrl, name: `${baseName}.jpg` });
+        } catch (err) {
+          console.warn('Canvas optimization fallback:', err);
+          resolve({ dataUrl: rawDataUrl, name: file.name });
+        }
+      };
+      img.onerror = () => resolve({ dataUrl: rawDataUrl, name: file.name });
+      img.src = rawDataUrl;
+    };
+    reader.onerror = () => resolve({ dataUrl: '', name: file.name });
+    reader.readAsDataURL(file);
+  });
+}
+
+window.handleImageFile = async function(inputEl, targetInputId, previewImgId) {
+  const file = inputEl.files && inputEl.files[0];
+  if (!file) return;
+  // Clear input value so choosing the same file again triggers onchange
+  inputEl.value = '';
+
+  const targetInput = document.getElementById(targetInputId);
+  const preview = document.getElementById(previewImgId);
+
+  showToast('Preparing & optimizing image...', 'info');
+  try {
+    const { dataUrl, name } = await optimizeImageIfNeeded(file);
+    if (!dataUrl) throw new Error('Could not read image data');
+
+    // Immediate preview feedback
+    if (preview) preview.src = dataUrl;
+
+    // Also update project card preview if this is a project image
+    if (targetInputId === 'field-img-project1') {
+      const cardPreview = document.getElementById('proj-card-img-preview-1');
+      if (cardPreview) cardPreview.src = dataUrl;
+    } else if (targetInputId === 'field-img-project2') {
+      const cardPreview = document.getElementById('proj-card-img-preview-2');
+      if (cardPreview) cardPreview.src = dataUrl;
+    } else if (targetInputId === 'field-img-project3') {
+      const cardPreview = document.getElementById('proj-card-img-preview-3');
+      if (cardPreview) cardPreview.src = dataUrl;
     }
-  };
-  reader.readAsDataURL(file);
+
+    showToast('Uploading image to server...', 'info');
+    const res = await fetch('/api/upload', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ filename: name, data: dataUrl })
+    });
+    const data = await res.json();
+    if (data && data.url) {
+      if (targetInput) targetInput.value = data.url;
+      if (preview) preview.src = data.url;
+      triggerAutoSave(100);
+      showToast('Image uploaded and applied! Auto-saving to database...', 'success');
+    } else {
+      showToast('Upload error: ' + (data?.error || 'Failed'), 'error');
+    }
+  } catch (err) {
+    showToast('Upload failed: ' + err.message, 'error');
+  }
 };
 
 window.resetImage = function(targetInputId, previewImgId, defaultUrl) {
@@ -1629,6 +1695,16 @@ window.resetImage = function(targetInputId, previewImgId, defaultUrl) {
   if (targetInput) targetInput.value = '';
   const preview = document.getElementById(previewImgId);
   if (preview) preview.src = defaultUrl;
+  if (targetInputId === 'field-img-project1') {
+    const cardPreview = document.getElementById('proj-card-img-preview-1');
+    if (cardPreview) cardPreview.src = defaultUrl;
+  } else if (targetInputId === 'field-img-project2') {
+    const cardPreview = document.getElementById('proj-card-img-preview-2');
+    if (cardPreview) cardPreview.src = defaultUrl;
+  } else if (targetInputId === 'field-img-project3') {
+    const cardPreview = document.getElementById('proj-card-img-preview-3');
+    if (cardPreview) cardPreview.src = defaultUrl;
+  }
   triggerAutoSave(100);
   showToast('Image reset to original.', 'success');
 };
@@ -1734,44 +1810,41 @@ window.applyMomentPreset = function(selectEl, idx) {
 };
 
 window.uploadMomentFile = async function(inputEl, idx) {
-  const file = inputEl.files[0];
+  const file = inputEl.files && inputEl.files[0];
   if (!file) return;
-  if (file.size > 25 * 1024 * 1024) {
-    showToast('File size is larger than 25MB. Please choose a smaller file.', 'error');
-    return;
-  }
-  showToast('Uploading ' + file.name + ' to cloud storage...', 'info');
-  const reader = new FileReader();
-  reader.onload = async function(e) {
-    try {
-      const res = await fetch('/api/upload', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ filename: file.name, data: e.target.result })
-      });
-      const data = await res.json();
-      if (data && data.url) {
-        const urlInput = document.getElementById(`moment-url-${idx}`);
-        if (urlInput) urlInput.value = data.url;
-        const typeSelect = document.getElementById(`moment-type-${idx}`);
-        if (typeSelect) {
-          if (file.type.startsWith('video/') || file.name.endsWith('.mp4') || file.name.endsWith('.webm')) {
-            typeSelect.value = 'video';
-          } else {
-            typeSelect.value = 'image';
-          }
+  inputEl.value = '';
+
+  showToast('Preparing & uploading ' + file.name + '...', 'info');
+  try {
+    const { dataUrl, name } = await optimizeImageIfNeeded(file);
+    if (!dataUrl) throw new Error('Could not read media data');
+
+    const res = await fetch('/api/upload', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ filename: name, data: dataUrl })
+    });
+    const data = await res.json();
+    if (data && data.url) {
+      const urlInput = document.getElementById(`moment-url-${idx}`);
+      if (urlInput) urlInput.value = data.url;
+      const typeSelect = document.getElementById(`moment-type-${idx}`);
+      if (typeSelect) {
+        if (file.type.startsWith('video/') || file.name.endsWith('.mp4') || file.name.endsWith('.webm')) {
+          typeSelect.value = 'video';
+        } else {
+          typeSelect.value = 'image';
         }
-        updateMomentPreview(idx);
-        triggerAutoSave(100);
-        showToast('Media uploaded & applied! Auto-saving to cloud database...', 'success');
-      } else {
-        showToast('Upload error: ' + (data?.error || 'Failed'), 'error');
       }
-    } catch (err) {
-      showToast('Upload failed: ' + err.message, 'error');
+      updateMomentPreview(idx);
+      triggerAutoSave(100);
+      showToast('Media uploaded & applied! Auto-saving to database...', 'success');
+    } else {
+      showToast('Upload error: ' + (data?.error || 'Failed'), 'error');
     }
-  };
-  reader.readAsDataURL(file);
+  } catch (err) {
+    showToast('Upload failed: ' + err.message, 'error');
+  }
 };
 
 window.addMomentItem = function() {
@@ -1881,6 +1954,24 @@ function renderProjects(projects) {
         <div class="form-group full">
           <label>Impact / Solution</label>
           <textarea class="proj-impact">${escapeHtml(p.impact || '')}</textarea>
+        </div>
+        <div class="form-group full" style="margin-top: 10px; padding-top: 12px; border-top: 1px solid var(--card-border);">
+          <label style="display:flex; justify-content:space-between; align-items:center;">
+            <span>Project Visual / Cover Image</span>
+            <span style="font-size:11px; color:var(--text-muted);">Syncs with Featured Work</span>
+          </label>
+          <div style="display:flex; gap:16px; align-items:center; flex-wrap:wrap; margin-top:8px;">
+            <div style="width:130px; height:85px; border-radius:8px; overflow:hidden; background:#1b212c; border:1px solid var(--card-border); flex-shrink:0;">
+              <img id="proj-card-img-preview-${idx + 1}" src="${escapeHtml((currentContent && currentContent.images && currentContent.images[`project${idx + 1}`]) || defaultContent.images[`project${idx + 1}`] || '')}" style="width:100%; height:100%; object-fit:cover;" onerror="this.src=defaultContent.images.project${idx + 1} || ''">
+            </div>
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <button type="button" class="btn btn-secondary" style="font-size:12px; width:fit-content;" onclick="document.getElementById('file-img-project${idx + 1}').click()">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                Upload Project #${idx + 1} Image
+              </button>
+              <span style="font-size:11px; color:var(--text-muted);">Supported formats: PNG, JPG, WebP. Automatically optimized on upload.</span>
+            </div>
+          </div>
         </div>
       </div>
     `;
@@ -2157,9 +2248,53 @@ function showToast(msg, type = 'success') {
   setTimeout(() => { toast.style.display = 'none'; }, 4000);
 }
 
-function escapeHtml(str) {
-  return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+function setupDragAndDrop() {
+  document.querySelectorAll('.image-card').forEach(card => {
+    const box = card.querySelector('.image-preview-box');
+    const fileInput = card.querySelector('input[type="file"]');
+    if (!box || !fileInput) return;
+
+    box.style.cursor = 'pointer';
+    box.title = 'Click or drag & drop image to replace';
+
+    box.addEventListener('click', (e) => {
+      if (e.target !== fileInput) {
+        fileInput.click();
+      }
+    });
+
+    ['dragenter', 'dragover'].forEach(eventName => {
+      box.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        box.style.borderColor = 'var(--accent)';
+        box.style.background = 'var(--accent-soft)';
+      }, false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+      box.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        box.style.borderColor = '';
+        box.style.background = '';
+      }, false);
+    });
+
+    box.addEventListener('drop', (e) => {
+      const dt = e.dataTransfer;
+      const files = dt.files;
+      if (files && files.length > 0) {
+        fileInput.files = files;
+        fileInput.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+    });
+  });
 }
+
+window.addEventListener('DOMContentLoaded', setupDragAndDrop);
+setTimeout(setupDragAndDrop, 300);
+setTimeout(setupDragAndDrop, 1000);
 
 initFirebase();
 </script>
