@@ -95,7 +95,7 @@ const newSyncScript = `<script id="cv-content-sync">
     img.dataset.portfolioImg = role;
 
     const currentSrcAttr = img.getAttribute("src") || "";
-    const isCustom = !newSrc.includes(defaultUrl.split(".")[0]);
+    const isCustom = Boolean(newSrc !== defaultUrl && (newSrc.startsWith("data:image/") || !newSrc.includes(defaultUrl)));
 
     if (isCustom) {
       if (currentSrcAttr !== newSrc || img.hasAttribute("srcset")) {

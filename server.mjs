@@ -325,7 +325,7 @@ const server = createServer(async (req, res) => {
     }
   }
 
-  if (decoded === '/api/content') {
+  if (decoded === '/api/content' || decoded === '/api/content/') {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
@@ -373,10 +373,11 @@ const server = createServer(async (req, res) => {
         return;
       }
     } else if (req.method === 'POST') {
-      let body = '';
-      req.on('data', chunk => { body += chunk; });
+      const chunks = [];
+      req.on('data', chunk => { chunks.push(chunk); });
       req.on('end', async () => {
         try {
+          const body = Buffer.concat(chunks).toString('utf8');
           const parsed = JSON.parse(body);
           await mkdir(resolve(root, 'data'), { recursive: true });
           await writeFile(dataFile, JSON.stringify(parsed, null, 2), 'utf8');

@@ -468,11 +468,89 @@
       padding: 3px 8px;
       border-radius: 4px;
     }
+    .image-dropzone {
+      position: relative;
+      cursor: pointer;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 2px dashed var(--card-border);
+      transition: all 0.2s ease;
+      background: #090c10;
+    }
+    .image-dropzone:hover, .image-dropzone.drag-over {
+      border-color: var(--accent);
+      box-shadow: 0 0 15px rgba(255, 77, 0, 0.25);
+    }
+    .image-dropzone .dropzone-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(10, 14, 20, 0.78);
+      backdrop-filter: blur(2px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      color: #fff;
+      font-size: 12px;
+      font-weight: 600;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      pointer-events: none;
+      z-index: 2;
+    }
+    .image-dropzone:hover .dropzone-overlay, .image-dropzone.drag-over .dropzone-overlay {
+      opacity: 1;
+    }
+    .image-storage-status {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 4px 2px;
+      font-size: 11px;
+    }
+    .badge-db-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 8px;
+      border-radius: 9999px;
+      font-weight: 600;
+      font-size: 11px;
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-muted);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .badge-db-status.stored {
+      background: rgba(16, 185, 129, 0.15);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.35);
+    }
+    .badge-db-status.processing {
+      background: rgba(255, 77, 0, 0.15);
+      color: var(--accent);
+      border: 1px solid rgba(255, 77, 0, 0.35);
+      animation: pulse 1s infinite alternate;
+    }
+    .badge-db-status.default {
+      background: rgba(148, 163, 184, 0.08);
+      color: #94a3b8;
+    }
+    .badge-db-status.error {
+      background: rgba(239, 68, 68, 0.15);
+      color: #f87171;
+      border: 1px solid rgba(239, 68, 68, 0.35);
+    }
+    .badge-size-status {
+      color: var(--text-muted);
+      font-size: 11px;
+      font-family: monospace;
+    }
     .image-preview-box {
       width: 100%;
       height: 180px;
       border-radius: 8px;
-      border: 1px dashed var(--card-border);
+      border: none;
       background: #090c10;
       display: grid;
       place-items: center;
@@ -491,8 +569,8 @@
       background: #090c10;
     }
     .image-preview-box.favicon-fit {
-      height: 100px;
-      width: 100px;
+      height: 110px;
+      width: 110px;
       margin: 0 auto;
     }
     .image-preview-box.favicon-fit img {
@@ -805,10 +883,17 @@
   <div id="tab-images" class="tab-content">
     <div class="card">
       <div class="card-title">
-        <span>Portfolio Images & Visual Assets</span>
+        <span>Portfolio Images & Visual Assets (Direct Database Storage)</span>
       </div>
-      <div class="card-description">Upload images from your device or paste any image URL. Images are saved to your database and applied to the live site.</div>
+      <div class="card-description">Upload images directly from your device or drag & drop onto any card. All images are optimized and stored directly inside your Cloud Firestore database with real-time sync to the live website. No external links or URL pasting needed.</div>
       
+      <div style="margin: 16px 0 20px; padding: 12px 16px; background: rgba(255, 77, 0, 0.08); border: 1px solid rgba(255, 77, 0, 0.25); border-radius: 8px; display: flex; align-items: center; gap: 12px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ff4d00" stroke-width="2" style="flex-shrink:0;"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        <div style="font-size: 13px; color: #f0f2f5;">
+          <strong>Direct Database Storage:</strong> Uploaded images are compressed into lightweight visual data and saved directly to the database. They survive restarts and update the live site immediately without file links.
+        </div>
+      </div>
+
       <div class="image-grid">
         <!-- Avatar / Profile Photo -->
         <div class="image-card">
@@ -819,20 +904,30 @@
             </div>
             <span class="image-card-badge">About Section</span>
           </div>
-          <div class="image-preview-box">
-            <img id="preview-img-avatar" src="framerusercontent.com/images/sHYLC5GLvyuqZRvQ521YBEuOos5bd4.png" alt="Avatar Preview" onerror="this.src='framerusercontent.com/images/sHYLC5GLvyuqZRvQ521YBEuOos5bd4.png'">
+
+          <div class="image-dropzone" id="dropzone-avatar" onclick="document.getElementById('file-img-avatar').click()" title="Click or drag image to replace">
+            <div class="image-preview-box">
+              <img id="preview-img-avatar" src="framerusercontent.com/images/sHYLC5GLvyuqZRvQ521YBEuOos5bd4.png" alt="Avatar Preview" onerror="this.src='framerusercontent.com/images/sHYLC5GLvyuqZRvQ521YBEuOos5bd4.png'">
+            </div>
+            <div class="dropzone-overlay">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+              <span>Click or Drop Image to Replace</span>
+            </div>
           </div>
-          <div class="form-group">
-            <label>Image URL</label>
-            <input type="text" id="field-img-avatar" placeholder="Paste image URL or upload below">
+
+          <div class="image-storage-status">
+            <span id="badge-storage-avatar" class="badge-db-status default">Original Framer Asset</span>
+            <span id="size-storage-avatar" class="badge-size-status"></span>
           </div>
+
           <div class="image-card-actions">
-            <button type="button" class="btn btn-secondary" onclick="document.getElementById('file-img-avatar').click()">
+            <button type="button" class="btn btn-primary" style="flex:1;" onclick="document.getElementById('file-img-avatar').click()">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-              Upload Photo
+              Upload to Database
             </button>
-            <input type="file" id="file-img-avatar" accept="image/*" style="display:none" onchange="handleImageFile(this, 'field-img-avatar', 'preview-img-avatar')">
-            <button type="button" class="btn btn-secondary" style="font-size:11px;" onclick="resetImage('field-img-avatar', 'preview-img-avatar', 'framerusercontent.com/images/sHYLC5GLvyuqZRvQ521YBEuOos5bd4.png')">Reset</button>
+            <input type="file" id="file-img-avatar" accept="image/*" style="display:none" onchange="handleDirectImageUpload(this, 'avatar')">
+            <input type="hidden" id="field-img-avatar">
+            <button type="button" class="btn btn-secondary" style="font-size:12px;" onclick="resetImageToDefault('avatar')">Reset</button>
           </div>
         </div>
 
@@ -845,20 +940,30 @@
             </div>
             <span class="image-card-badge">Featured Work</span>
           </div>
-          <div class="image-preview-box">
-            <img id="preview-img-project1" src="framerusercontent.com/images/JFlxur51MvdnXVwJcmocQgdbRz8f210.png" alt="Project 1 Preview" onerror="this.src='framerusercontent.com/images/JFlxur51MvdnXVwJcmocQgdbRz8f210.png'">
+
+          <div class="image-dropzone" id="dropzone-project1" onclick="document.getElementById('file-img-project1').click()" title="Click or drag image to replace">
+            <div class="image-preview-box">
+              <img id="preview-img-project1" src="framerusercontent.com/images/JFlxur51MvdnXVwJcmocQgdbRz8f210.png" alt="Project 1 Preview" onerror="this.src='framerusercontent.com/images/JFlxur51MvdnXVwJcmocQgdbRz8f210.png'">
+            </div>
+            <div class="dropzone-overlay">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+              <span>Click or Drop Image to Replace</span>
+            </div>
           </div>
-          <div class="form-group">
-            <label>Image URL</label>
-            <input type="text" id="field-img-project1" placeholder="Paste image URL or upload below">
+
+          <div class="image-storage-status">
+            <span id="badge-storage-project1" class="badge-db-status default">Original Framer Asset</span>
+            <span id="size-storage-project1" class="badge-size-status"></span>
           </div>
+
           <div class="image-card-actions">
-            <button type="button" class="btn btn-secondary" onclick="document.getElementById('file-img-project1').click()">
+            <button type="button" class="btn btn-primary" style="flex:1;" onclick="document.getElementById('file-img-project1').click()">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-              Upload Image
+              Upload to Database
             </button>
-            <input type="file" id="file-img-project1" accept="image/*" style="display:none" onchange="handleImageFile(this, 'field-img-project1', 'preview-img-project1')">
-            <button type="button" class="btn btn-secondary" style="font-size:11px;" onclick="resetImage('field-img-project1', 'preview-img-project1', 'framerusercontent.com/images/JFlxur51MvdnXVwJcmocQgdbRz8f210.png')">Reset</button>
+            <input type="file" id="file-img-project1" accept="image/*" style="display:none" onchange="handleDirectImageUpload(this, 'project1')">
+            <input type="hidden" id="field-img-project1">
+            <button type="button" class="btn btn-secondary" style="font-size:12px;" onclick="resetImageToDefault('project1')">Reset</button>
           </div>
         </div>
 
@@ -871,20 +976,30 @@
             </div>
             <span class="image-card-badge">Featured Work</span>
           </div>
-          <div class="image-preview-box">
-            <img id="preview-img-project2" src="framerusercontent.com/images/3uqfpcZtUI0KOAlHMVjpapzRl8c7f5.png" alt="Project 2 Preview" onerror="this.src='framerusercontent.com/images/3uqfpcZtUI0KOAlHMVjpapzRl8c7f5.png'">
+
+          <div class="image-dropzone" id="dropzone-project2" onclick="document.getElementById('file-img-project2').click()" title="Click or drag image to replace">
+            <div class="image-preview-box">
+              <img id="preview-img-project2" src="framerusercontent.com/images/3uqfpcZtUI0KOAlHMVjpapzRl8c7f5.png" alt="Project 2 Preview" onerror="this.src='framerusercontent.com/images/3uqfpcZtUI0KOAlHMVjpapzRl8c7f5.png'">
+            </div>
+            <div class="dropzone-overlay">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+              <span>Click or Drop Image to Replace</span>
+            </div>
           </div>
-          <div class="form-group">
-            <label>Image URL</label>
-            <input type="text" id="field-img-project2" placeholder="Paste image URL or upload below">
+
+          <div class="image-storage-status">
+            <span id="badge-storage-project2" class="badge-db-status default">Original Framer Asset</span>
+            <span id="size-storage-project2" class="badge-size-status"></span>
           </div>
+
           <div class="image-card-actions">
-            <button type="button" class="btn btn-secondary" onclick="document.getElementById('file-img-project2').click()">
+            <button type="button" class="btn btn-primary" style="flex:1;" onclick="document.getElementById('file-img-project2').click()">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-              Upload Image
+              Upload to Database
             </button>
-            <input type="file" id="file-img-project2" accept="image/*" style="display:none" onchange="handleImageFile(this, 'field-img-project2', 'preview-img-project2')">
-            <button type="button" class="btn btn-secondary" style="font-size:11px;" onclick="resetImage('field-img-project2', 'preview-img-project2', 'framerusercontent.com/images/3uqfpcZtUI0KOAlHMVjpapzRl8c7f5.png')">Reset</button>
+            <input type="file" id="file-img-project2" accept="image/*" style="display:none" onchange="handleDirectImageUpload(this, 'project2')">
+            <input type="hidden" id="field-img-project2">
+            <button type="button" class="btn btn-secondary" style="font-size:12px;" onclick="resetImageToDefault('project2')">Reset</button>
           </div>
         </div>
 
@@ -897,20 +1012,30 @@
             </div>
             <span class="image-card-badge">Featured Work</span>
           </div>
-          <div class="image-preview-box">
-            <img id="preview-img-project3" src="framerusercontent.com/images/Qz0PfMLlkZPgfWPWG0w1Aj6I8c7f5.png" alt="Project 3 Preview" onerror="this.src='framerusercontent.com/images/Qz0PfMLlkZPgfWPWG0w1Aj6I8c7f5.png'">
+
+          <div class="image-dropzone" id="dropzone-project3" onclick="document.getElementById('file-img-project3').click()" title="Click or drag image to replace">
+            <div class="image-preview-box">
+              <img id="preview-img-project3" src="framerusercontent.com/images/Qz0PfMLlkZPgfWPWG0w1Aj6I8c7f5.png" alt="Project 3 Preview" onerror="this.src='framerusercontent.com/images/Qz0PfMLlkZPgfWPWG0w1Aj6I8c7f5.png'">
+            </div>
+            <div class="dropzone-overlay">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+              <span>Click or Drop Image to Replace</span>
+            </div>
           </div>
-          <div class="form-group">
-            <label>Image URL</label>
-            <input type="text" id="field-img-project3" placeholder="Paste image URL or upload below">
+
+          <div class="image-storage-status">
+            <span id="badge-storage-project3" class="badge-db-status default">Original Framer Asset</span>
+            <span id="size-storage-project3" class="badge-size-status"></span>
           </div>
+
           <div class="image-card-actions">
-            <button type="button" class="btn btn-secondary" onclick="document.getElementById('file-img-project3').click()">
+            <button type="button" class="btn btn-primary" style="flex:1;" onclick="document.getElementById('file-img-project3').click()">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-              Upload Image
+              Upload to Database
             </button>
-            <input type="file" id="file-img-project3" accept="image/*" style="display:none" onchange="handleImageFile(this, 'field-img-project3', 'preview-img-project3')">
-            <button type="button" class="btn btn-secondary" style="font-size:11px;" onclick="resetImage('field-img-project3', 'preview-img-project3', 'framerusercontent.com/images/Qz0PfMLlkZPgfWPWG0w1Aj6I8c7f5.png')">Reset</button>
+            <input type="file" id="file-img-project3" accept="image/*" style="display:none" onchange="handleDirectImageUpload(this, 'project3')">
+            <input type="hidden" id="field-img-project3">
+            <button type="button" class="btn btn-secondary" style="font-size:12px;" onclick="resetImageToDefault('project3')">Reset</button>
           </div>
         </div>
 
@@ -923,20 +1048,30 @@
             </div>
             <span class="image-card-badge">SEO & Links</span>
           </div>
-          <div class="image-preview-box">
-            <img id="preview-img-ogImage" src="framerusercontent.com/images/mE8wUY9AKZAw29HtTltTNM78Y.png" alt="OG Preview" onerror="this.src='framerusercontent.com/images/mE8wUY9AKZAw29HtTltTNM78Y.png'">
+
+          <div class="image-dropzone" id="dropzone-ogImage" onclick="document.getElementById('file-img-ogImage').click()" title="Click or drag image to replace">
+            <div class="image-preview-box">
+              <img id="preview-img-ogImage" src="framerusercontent.com/images/mE8wUY9AKZAw29HtTltTNM78Y.png" alt="OG Preview" onerror="this.src='framerusercontent.com/images/mE8wUY9AKZAw29HtTltTNM78Y.png'">
+            </div>
+            <div class="dropzone-overlay">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+              <span>Click or Drop Image to Replace</span>
+            </div>
           </div>
-          <div class="form-group">
-            <label>Image URL</label>
-            <input type="text" id="field-img-ogImage" placeholder="Paste image URL or upload below">
+
+          <div class="image-storage-status">
+            <span id="badge-storage-ogImage" class="badge-db-status default">Original Framer Asset</span>
+            <span id="size-storage-ogImage" class="badge-size-status"></span>
           </div>
+
           <div class="image-card-actions">
-            <button type="button" class="btn btn-secondary" onclick="document.getElementById('file-img-ogImage').click()">
+            <button type="button" class="btn btn-primary" style="flex:1;" onclick="document.getElementById('file-img-ogImage').click()">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-              Upload Card
+              Upload to Database
             </button>
-            <input type="file" id="file-img-ogImage" accept="image/*" style="display:none" onchange="handleImageFile(this, 'field-img-ogImage', 'preview-img-ogImage')">
-            <button type="button" class="btn btn-secondary" style="font-size:11px;" onclick="resetImage('field-img-ogImage', 'preview-img-ogImage', 'framerusercontent.com/images/mE8wUY9AKZAw29HtTltTNM78Y.png')">Reset</button>
+            <input type="file" id="file-img-ogImage" accept="image/*" style="display:none" onchange="handleDirectImageUpload(this, 'ogImage')">
+            <input type="hidden" id="field-img-ogImage">
+            <button type="button" class="btn btn-secondary" style="font-size:12px;" onclick="resetImageToDefault('ogImage')">Reset</button>
           </div>
         </div>
 
@@ -949,20 +1084,30 @@
             </div>
             <span class="image-card-badge">Browser Tab</span>
           </div>
-          <div class="image-preview-box favicon-fit contain-fit">
-            <img id="preview-img-favicon" src="framerusercontent.com/images/HBHFPi1YvOmewl8NVUc4Ff7IXk.png" alt="Favicon Preview" onerror="this.src='framerusercontent.com/images/HBHFPi1YvOmewl8NVUc4Ff7IXk.png'">
+
+          <div class="image-dropzone" id="dropzone-favicon" onclick="document.getElementById('file-img-favicon').click()" title="Click or drag icon to replace">
+            <div class="image-preview-box favicon-fit contain-fit">
+              <img id="preview-img-favicon" src="framerusercontent.com/images/HBHFPi1YvOmewl8NVUc4Ff7IXk.png" alt="Favicon Preview" onerror="this.src='framerusercontent.com/images/HBHFPi1YvOmewl8NVUc4Ff7IXk.png'">
+            </div>
+            <div class="dropzone-overlay">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+              <span>Click to Replace</span>
+            </div>
           </div>
-          <div class="form-group">
-            <label>Icon URL</label>
-            <input type="text" id="field-img-favicon" placeholder="Paste icon URL or upload below">
+
+          <div class="image-storage-status">
+            <span id="badge-storage-favicon" class="badge-db-status default">Original Framer Asset</span>
+            <span id="size-storage-favicon" class="badge-size-status"></span>
           </div>
+
           <div class="image-card-actions">
-            <button type="button" class="btn btn-secondary" onclick="document.getElementById('file-img-favicon').click()">
+            <button type="button" class="btn btn-primary" style="flex:1;" onclick="document.getElementById('file-img-favicon').click()">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-              Upload Icon
+              Upload to Database
             </button>
-            <input type="file" id="file-img-favicon" accept="image/*" style="display:none" onchange="handleImageFile(this, 'field-img-favicon', 'preview-img-favicon')">
-            <button type="button" class="btn btn-secondary" style="font-size:11px;" onclick="resetImage('field-img-favicon', 'preview-img-favicon', 'framerusercontent.com/images/HBHFPi1YvOmewl8NVUc4Ff7IXk.png')">Reset</button>
+            <input type="file" id="file-img-favicon" accept="image/*" style="display:none" onchange="handleDirectImageUpload(this, 'favicon')">
+            <input type="hidden" id="field-img-favicon">
+            <button type="button" class="btn btn-secondary" style="font-size:12px;" onclick="resetImageToDefault('favicon')">Reset</button>
           </div>
         </div>
       </div>
@@ -1366,11 +1511,34 @@ function populateForm(data) {
 }
 
 function setImgFieldAndPreview(inputId, previewId, val, defaultVal) {
+  const role = inputId.replace('field-img-', '');
   const input = document.getElementById(inputId);
   const preview = document.getElementById(previewId);
-  if (input) input.value = val || '';
+  const statusBadge = document.getElementById(`badge-storage-${role}`);
+  const sizeBadge = document.getElementById(`size-storage-${role}`);
+
+  const isCustom = Boolean(val && val !== defaultVal && (val.startsWith('data:image/') || val.startsWith('/assets/uploads/') || val.startsWith('http')));
+
+  if (input) input.value = isCustom ? val : '';
   if (preview) {
-    preview.src = val || defaultVal;
+    preview.src = isCustom ? val : defaultVal;
+  }
+
+  if (statusBadge) {
+    if (isCustom) {
+      statusBadge.className = 'badge-db-status stored';
+      statusBadge.textContent = '✓ Stored in Database';
+      if (val.startsWith('data:image/')) {
+        const kb = Math.max(1, Math.round((val.length * 3 / 4) / 1024));
+        if (sizeBadge) sizeBadge.textContent = `${kb} KB WebP`;
+      } else if (sizeBadge) {
+        sizeBadge.textContent = 'Custom';
+      }
+    } else {
+      statusBadge.className = 'badge-db-status default';
+      statusBadge.textContent = 'Original Framer Asset';
+      if (sizeBadge) sizeBadge.textContent = '';
+    }
   }
 }
 
@@ -1451,12 +1619,12 @@ function collectFormData() {
   };
 
   const images = {
-    avatar: document.getElementById('field-img-avatar')?.value.trim() || defaultContent.images.avatar,
-    project1: document.getElementById('field-img-project1')?.value.trim() || defaultContent.images.project1,
-    project2: document.getElementById('field-img-project2')?.value.trim() || defaultContent.images.project2,
-    project3: document.getElementById('field-img-project3')?.value.trim() || defaultContent.images.project3,
-    ogImage: document.getElementById('field-img-ogImage')?.value.trim() || defaultContent.images.ogImage,
-    favicon: document.getElementById('field-img-favicon')?.value.trim() || defaultContent.images.favicon
+    avatar: (currentContent && currentContent.images && currentContent.images.avatar) || document.getElementById('field-img-avatar')?.value.trim() || defaultContent.images.avatar,
+    project1: (currentContent && currentContent.images && currentContent.images.project1) || document.getElementById('field-img-project1')?.value.trim() || defaultContent.images.project1,
+    project2: (currentContent && currentContent.images && currentContent.images.project2) || document.getElementById('field-img-project2')?.value.trim() || defaultContent.images.project2,
+    project3: (currentContent && currentContent.images && currentContent.images.project3) || document.getElementById('field-img-project3')?.value.trim() || defaultContent.images.project3,
+    ogImage: (currentContent && currentContent.images && currentContent.images.ogImage) || document.getElementById('field-img-ogImage')?.value.trim() || defaultContent.images.ogImage,
+    favicon: (currentContent && currentContent.images && currentContent.images.favicon) || document.getElementById('field-img-favicon')?.value.trim() || defaultContent.images.favicon
   };
 
   return {
@@ -1590,24 +1758,24 @@ window.savePortfolioContent = async function(isAuto = false) {
   await performDatabaseSave(isAuto);
 };
 
-async function optimizeImageIfNeeded(file) {
-  if (!file || !file.type || !file.type.startsWith('image/') || file.type.includes('svg') || file.type.includes('gif')) {
+async function optimizeImageForDatabase(file, maxDim = 1000, quality = 0.82) {
+  if (!file) throw new Error('No file provided');
+  if (file.type === 'image/svg+xml') {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
-      reader.onload = () => resolve({ dataUrl: reader.result, name: file.name });
+      reader.onload = () => resolve(reader.result);
       reader.onerror = reject;
       reader.readAsDataURL(file);
     });
   }
 
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = (e) => {
       const rawDataUrl = e.target.result;
       const img = new Image();
       img.onload = () => {
         try {
-          const maxDim = 2048;
           let { width, height } = img;
           if (width > maxDim || height > maxDim) {
             if (width > height) {
@@ -1622,91 +1790,148 @@ async function optimizeImageIfNeeded(file) {
           canvas.width = width;
           canvas.height = height;
           const ctx = canvas.getContext('2d');
+          ctx.imageSmoothingEnabled = true;
+          ctx.imageSmoothingQuality = 'high';
           ctx.drawImage(img, 0, 0, width, height);
 
-          const outputType = 'image/jpeg';
-          const optimizedDataUrl = canvas.toDataURL(outputType, 0.90);
-          const baseName = (file.name || 'image').replace(/\.[^/.]+$/, '').replace(/[^a-zA-Z0-9._-]/g, '_');
-          resolve({ dataUrl: optimizedDataUrl, name: `${baseName}.jpg` });
+          // Prefer WebP for ultra-compact size, fallback to JPEG
+          let outputType = 'image/webp';
+          let dataUrl = canvas.toDataURL(outputType, quality);
+          if (!dataUrl.startsWith('data:image/webp')) {
+            outputType = 'image/jpeg';
+            dataUrl = canvas.toDataURL(outputType, quality);
+          }
+
+          // If still over 220KB, apply a second pass
+          if (dataUrl.length > 220 * 1024) {
+            dataUrl = canvas.toDataURL(outputType, Math.max(0.65, quality - 0.15));
+          }
+
+          resolve(dataUrl);
         } catch (err) {
           console.warn('Canvas optimization fallback:', err);
-          resolve({ dataUrl: rawDataUrl, name: file.name });
+          resolve(rawDataUrl);
         }
       };
-      img.onerror = () => resolve({ dataUrl: rawDataUrl, name: file.name });
+      img.onerror = () => resolve(rawDataUrl);
       img.src = rawDataUrl;
     };
-    reader.onerror = () => resolve({ dataUrl: '', name: file.name });
+    reader.onerror = reject;
     reader.readAsDataURL(file);
   });
 }
 
-window.handleImageFile = async function(inputEl, targetInputId, previewImgId) {
+window.handleDirectImageUpload = async function(inputEl, role) {
   const file = inputEl.files && inputEl.files[0];
   if (!file) return;
-  // Clear input value so choosing the same file again triggers onchange
   inputEl.value = '';
 
-  const targetInput = document.getElementById(targetInputId);
-  const preview = document.getElementById(previewImgId);
+  const preview = document.getElementById(`preview-img-${role}`);
+  const statusBadge = document.getElementById(`badge-storage-${role}`);
+  const sizeBadge = document.getElementById(`size-storage-${role}`);
+  const hiddenInput = document.getElementById(`field-img-${role}`);
 
-  showToast('Preparing & optimizing image...', 'info');
+  if (statusBadge) {
+    statusBadge.className = 'badge-db-status processing';
+    statusBadge.textContent = 'Optimizing for Database...';
+  }
+
+  showToast(`Optimizing image for direct database storage...`, 'info');
+
   try {
-    const { dataUrl, name } = await optimizeImageIfNeeded(file);
-    if (!dataUrl) throw new Error('Could not read image data');
+    let maxDim = 1000;
+    let quality = 0.82;
+    if (role === 'avatar') {
+      maxDim = 800;
+      quality = 0.82;
+    } else if (role === 'favicon') {
+      maxDim = 128;
+      quality = 0.90;
+    } else if (role === 'ogImage') {
+      maxDim = 1200;
+      quality = 0.80;
+    } else {
+      maxDim = 1100;
+      quality = 0.80;
+    }
+
+    const dataUrl = await optimizeImageForDatabase(file, maxDim, quality);
+    if (!dataUrl) throw new Error('Could not optimize image');
 
     // Immediate preview feedback
     if (preview) preview.src = dataUrl;
+    if (hiddenInput) hiddenInput.value = dataUrl;
 
-    // Also update project card preview if this is a project image
-    if (targetInputId === 'field-img-project1') {
-      const cardPreview = document.getElementById('proj-card-img-preview-1');
-      if (cardPreview) cardPreview.src = dataUrl;
-    } else if (targetInputId === 'field-img-project2') {
-      const cardPreview = document.getElementById('proj-card-img-preview-2');
-      if (cardPreview) cardPreview.src = dataUrl;
-    } else if (targetInputId === 'field-img-project3') {
-      const cardPreview = document.getElementById('proj-card-img-preview-3');
+    if (!currentContent.images) currentContent.images = {};
+    currentContent.images[role] = dataUrl;
+
+    // Update project card preview if relevant
+    if (role === 'project1' || role === 'project2' || role === 'project3') {
+      const idx = role.replace('project', '');
+      const cardPreview = document.getElementById(`proj-card-img-preview-${idx}`);
       if (cardPreview) cardPreview.src = dataUrl;
     }
 
-    showToast('Uploading image to server...', 'info');
-    const res = await fetch('/api/upload', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ filename: name, data: dataUrl })
-    });
-    const data = await res.json();
-    if (data && data.url) {
-      if (targetInput) targetInput.value = data.url;
-      if (preview) preview.src = data.url;
-      triggerAutoSave(100);
-      showToast('Image uploaded and applied! Auto-saving to database...', 'success');
-    } else {
-      showToast('Upload error: ' + (data?.error || 'Failed'), 'error');
+    const kb = Math.max(1, Math.round((dataUrl.length * 3 / 4) / 1024));
+    if (statusBadge) {
+      statusBadge.className = 'badge-db-status stored';
+      statusBadge.textContent = '✓ Stored in Database';
     }
+    if (sizeBadge) {
+      sizeBadge.textContent = `${kb} KB WebP`;
+    }
+
+    // Save directly to Firestore Database and server content
+    await performDatabaseSave(false);
+    showToast(`Image uploaded & saved directly in Database (${kb} KB)! Website updated.`, 'success');
   } catch (err) {
-    showToast('Upload failed: ' + err.message, 'error');
+    console.error('Image direct upload error:', err);
+    if (statusBadge) {
+      statusBadge.className = 'badge-db-status error';
+      statusBadge.textContent = 'Upload Failed';
+    }
+    showToast('Failed to upload image: ' + err.message, 'error');
   }
 };
 
-window.resetImage = function(targetInputId, previewImgId, defaultUrl) {
-  const targetInput = document.getElementById(targetInputId);
-  if (targetInput) targetInput.value = '';
-  const preview = document.getElementById(previewImgId);
+window.resetImageToDefault = async function(role) {
+  const defaultUrl = defaultContent.images[role] || '';
+  if (!currentContent.images) currentContent.images = {};
+  currentContent.images[role] = defaultUrl;
+
+  const hiddenInput = document.getElementById(`field-img-${role}`);
+  if (hiddenInput) hiddenInput.value = '';
+
+  const preview = document.getElementById(`preview-img-${role}`);
   if (preview) preview.src = defaultUrl;
-  if (targetInputId === 'field-img-project1') {
-    const cardPreview = document.getElementById('proj-card-img-preview-1');
-    if (cardPreview) cardPreview.src = defaultUrl;
-  } else if (targetInputId === 'field-img-project2') {
-    const cardPreview = document.getElementById('proj-card-img-preview-2');
-    if (cardPreview) cardPreview.src = defaultUrl;
-  } else if (targetInputId === 'field-img-project3') {
-    const cardPreview = document.getElementById('proj-card-img-preview-3');
+
+  const statusBadge = document.getElementById(`badge-storage-${role}`);
+  if (statusBadge) {
+    statusBadge.className = 'badge-db-status default';
+    statusBadge.textContent = 'Original Framer Asset';
+  }
+  const sizeBadge = document.getElementById(`size-storage-${role}`);
+  if (sizeBadge) sizeBadge.textContent = '';
+
+  if (role === 'project1' || role === 'project2' || role === 'project3') {
+    const idx = role.replace('project', '');
+    const cardPreview = document.getElementById(`proj-card-img-preview-${idx}`);
     if (cardPreview) cardPreview.src = defaultUrl;
   }
-  triggerAutoSave(100);
-  showToast('Image reset to original.', 'success');
+
+  await performDatabaseSave(false);
+  showToast('Image reset to original Framer asset.', 'success');
+};
+
+// Legacy compatibility wrappers
+window.handleImageFile = async function(inputEl, targetInputId, previewImgId) {
+  const role = targetInputId.replace('field-img-', '');
+  await window.handleDirectImageUpload(inputEl, role);
+};
+
+window.resetImage = function(targetInputId, previewImgId, defaultUrl) {
+  const role = targetInputId.replace('field-img-', '');
+  window.resetImageToDefault(role);
 };
 
 function getMomentPreviewHtml(type, url) {
@@ -1814,36 +2039,50 @@ window.uploadMomentFile = async function(inputEl, idx) {
   if (!file) return;
   inputEl.value = '';
 
-  showToast('Preparing & uploading ' + file.name + '...', 'info');
-  try {
-    const { dataUrl, name } = await optimizeImageIfNeeded(file);
-    if (!dataUrl) throw new Error('Could not read media data');
+  const urlInput = document.getElementById(`moment-url-${idx}`);
+  const typeSelect = document.getElementById(`moment-type-${idx}`);
 
-    const res = await fetch('/api/upload', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ filename: name, data: dataUrl })
-    });
-    const data = await res.json();
-    if (data && data.url) {
-      const urlInput = document.getElementById(`moment-url-${idx}`);
-      if (urlInput) urlInput.value = data.url;
-      const typeSelect = document.getElementById(`moment-type-${idx}`);
-      if (typeSelect) {
-        if (file.type.startsWith('video/') || file.name.endsWith('.mp4') || file.name.endsWith('.webm')) {
-          typeSelect.value = 'video';
-        } else {
-          typeSelect.value = 'image';
-        }
-      }
+  showToast('Preparing media for database...', 'info');
+  try {
+    const isImage = file.type.startsWith('image/') && !file.name.endsWith('.mp4') && !file.name.endsWith('.webm');
+    
+    if (isImage) {
+      const dataUrl = await optimizeImageForDatabase(file, 900, 0.82);
+      if (!dataUrl) throw new Error('Could not process image');
+      if (urlInput) urlInput.value = dataUrl;
+      if (typeSelect) typeSelect.value = 'image';
       updateMomentPreview(idx);
-      triggerAutoSave(100);
-      showToast('Media uploaded & applied! Auto-saving to database...', 'success');
-    } else {
-      showToast('Upload error: ' + (data?.error || 'Failed'), 'error');
+      await performDatabaseSave(false);
+      showToast('Moment image saved directly to database!', 'success');
+      return;
     }
+
+    // Video upload fallback via server
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      try {
+        const res = await fetch('/api/upload', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ filename: file.name, data: e.target.result })
+        });
+        const data = await res.json();
+        if (data && data.url) {
+          if (urlInput) urlInput.value = data.url;
+          if (typeSelect) typeSelect.value = 'video';
+          updateMomentPreview(idx);
+          await performDatabaseSave(false);
+          showToast('Moment video uploaded & saved!', 'success');
+        } else {
+          showToast('Upload error: ' + (data?.error || 'Failed'), 'error');
+        }
+      } catch(err) {
+        showToast('Upload failed: ' + err.message, 'error');
+      }
+    };
+    reader.readAsDataURL(file);
   } catch (err) {
-    showToast('Upload failed: ' + err.message, 'error');
+    showToast('Media processing failed: ' + err.message, 'error');
   }
 };
 
@@ -2249,46 +2488,38 @@ function showToast(msg, type = 'success') {
 }
 
 function setupDragAndDrop() {
-  document.querySelectorAll('.image-card').forEach(card => {
-    const box = card.querySelector('.image-preview-box');
-    const fileInput = card.querySelector('input[type="file"]');
-    if (!box || !fileInput) return;
-
-    box.style.cursor = 'pointer';
-    box.title = 'Click or drag & drop image to replace';
-
-    box.addEventListener('click', (e) => {
-      if (e.target !== fileInput) {
-        fileInput.click();
-      }
-    });
+  ['avatar', 'project1', 'project2', 'project3', 'ogImage', 'favicon'].forEach(role => {
+    const dropzone = document.getElementById(`dropzone-${role}`);
+    const fileInput = document.getElementById(`file-img-${role}`);
+    if (!dropzone || !fileInput) return;
 
     ['dragenter', 'dragover'].forEach(eventName => {
-      box.addEventListener(eventName, (e) => {
+      dropzone.addEventListener(eventName, (e) => {
         e.preventDefault();
         e.stopPropagation();
-        box.style.borderColor = 'var(--accent)';
-        box.style.background = 'var(--accent-soft)';
+        dropzone.classList.add('drag-over');
       }, false);
     });
 
     ['dragleave', 'drop'].forEach(eventName => {
-      box.addEventListener(eventName, (e) => {
+      dropzone.addEventListener(eventName, (e) => {
         e.preventDefault();
         e.stopPropagation();
-        box.style.borderColor = '';
-        box.style.background = '';
+        dropzone.classList.remove('drag-over');
       }, false);
     });
 
-    box.addEventListener('drop', (e) => {
+    dropzone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      dropzone.classList.remove('drag-over');
       const dt = e.dataTransfer;
       const files = dt.files;
       if (files && files.length > 0) {
         fileInput.files = files;
-        fileInput.dispatchEvent(new Event('change', { bubbles: true }));
+        window.handleDirectImageUpload(fileInput, role);
       }
-    });
+    }, false);
   });
 }
 

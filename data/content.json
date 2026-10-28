@@ -1,4 +1,14 @@
 {
+  "bio": "",
+  "updatedAt": "2026-10-28T15:23:31.498Z",
+  "phone": "9843688407",
+  "skills": [],
+  "name": "Yogendra Chaudhary",
+  "location": "Kathmandu, Nepal",
+  "projects": [],
+  "tagline": "",
+  "heroName": "yogendra",
+  "linkedin": "https://www.linkedin.com/in/yogendrach",
   "moments": {
     "enabled": true,
     "heading": "Moments & Perspectives",
@@ -7,7 +17,7 @@
         "id": "m1",
         "type": "image",
         "title": "A boat in the sea",
-        "caption": "A boat in the sea",
+        "caption": "Coastal perspective",
         "url": "framerusercontent.com/images/ehOmNLWqfLr0ru8zjAdTwZ52LSwa509.png?width=1440&height=965",
         "enabled": true
       },
@@ -15,7 +25,7 @@
         "id": "m2",
         "type": "image",
         "title": "Skating on one leg",
-        "caption": "Skating on one leg",
+        "caption": "Balance and motion",
         "url": "framerusercontent.com/images/kSvhhUViVRGA321n0FArKUn7BE7184.png?width=1348&height=646",
         "enabled": true
       },
@@ -23,7 +33,7 @@
         "id": "m3",
         "type": "image",
         "title": "Riding a bicycle with V sign",
-        "caption": "Riding a bicycle with V sign",
+        "caption": "Joyful street exploration",
         "url": "framerusercontent.com/images/9klKm3Jbw0xGpRRdhwzNs4zc1Ac8d1.png?width=1440&height=1467",
         "enabled": true
       },
@@ -31,130 +41,42 @@
         "id": "m4",
         "type": "video",
         "title": "Creative Perspective Reel",
-        "caption": "Creative Perspective Reel",
+        "caption": "Perspective loop reel",
         "url": "https://framerusercontent.com/assets/90dOuPDtqqlxo7jejBanpUEPmc.mp4",
         "enabled": true
       }
     ]
   },
-  "title": "UI/UX & Product Designer",
-  "experience": [
-    {
-      "id": "e1",
-      "company": "Aarawan Media & Tech | Kathmandu, Nepal",
-      "role": "Junior UI/UX Designer",
-      "period": "2026 – Present (Internship: Jun - Sep 2026)",
-      "details": "Assisted with usability testing, interface reviews, and refinements. Designed and refined software product interfaces, prioritizing clarity and consistent patterns.",
-      "enabled": true
-    },
-    {
-      "id": "e2",
-      "company": "Tribhuvan University (SOMTU)",
-      "role": "Product & UI/UX Designer",
-      "period": "2025 – 2026",
-      "details": "Designed complete university web platform covering 87 screens and 81 component variants across desktop and mobile.",
-      "enabled": true
-    },
-    {
-      "id": "e3",
-      "company": "Makawanpur Multiple Campus",
-      "role": "Bachelor of Business Studies (BBS)",
-      "period": "4th year (Running)",
-      "details": "Business studies curriculum providing domain understanding for accounting, ERP platforms, and operational workflows.",
-      "enabled": true
-    }
-  ],
-  "name": "Yogendra Chaudhary",
-  "updatedAt": "2026-10-28T13:40:44.916Z",
-  "texts": {
-    "heroAnnouncement": "Switch your system to Dark Mode for a better experience",
-    "aboutStory": "I make complicated things feel simple, and good products feel a little magical. 5+ years, 15+ clients, and a mild obsession with making software feel effortless to use.",
-    "greeting": "Hello! 👋 I'm",
-    "aboutHeadline": "An IDF certified Product Designer, crafting experiences that flow.",
-    "footerCopyright": "© 2026 Yogendra Chaudhary. All rights reserved.",
-    "contactCta": "Let's Connect ↗",
-    "loadingScreen": "Yogendra Chaudhary",
-    "footerNote": "Handmade with ❤️ in Nepal",
-    "processDesc": "Design is not just what it looks like and feels like. Design is how it works."
-  },
-  "phone": "9843688407",
-  "skills": [
-    {
-      "id": "s1",
-      "title": "UX Design",
-      "description": "User Flows / Workflow Design / Usability Testing / Interaction Design",
-      "enabled": true
-    },
-    {
-      "id": "s2",
-      "title": "UI Design",
-      "description": "Interface Design / Typography / Layout / Visual Hierarchy / UI Components",
-      "enabled": true
-    },
-    {
-      "id": "s3",
-      "title": "Design Systems",
-      "description": "Reusable Components / Component Consistency / UI States / Design Iteration",
-      "enabled": true
-    },
-    {
-      "id": "s4",
-      "title": "Tools & Collaboration",
-      "description": "Figma / Adobe Photoshop / Adobe Illustrator / Developer Handoff / Cross-functional Collaboration",
-      "enabled": true
-    }
-  ],
-  "bio": "",
-  "location": "Kathmandu, Nepal",
   "resumeUrl": "/assets/aistudio/Yogendra_Chaudhary_CV_cc247373.pdf",
   "email": "yogendrachaudhary2061@gmail.com",
-  "images": {
-    "ogImage": "framerusercontent.com/images/mE8wUY9AKZAw29HtTltTNM78Y.png",
-    "project3": "framerusercontent.com/images/Qz0PfMLlkZPgfWPWG0w1Aj6I8c7f5.png",
-    "avatar": "framerusercontent.com/images/sHYLC5GLvyuqZRvQ521YBEuOos5bd4.png",
-    "project2": "framerusercontent.com/images/3uqfpcZtUI0KOAlHMVjpapzRl8c7f5.png",
-    "favicon": "framerusercontent.com/images/HBHFPi1YvOmewl8NVUc4Ff7IXk.png",
-    "project1": "framerusercontent.com/images/JFlxur51MvdnXVwJcmocQgdbRz8f210.png"
+  "title": "UI/UX & Product Designer",
+  "texts": {
+    "greeting": "Hello! 👋 I'm",
+    "footerCopyright": "© 2026 Yogendra Chaudhary. All rights reserved.",
+    "processDesc": "Design is not just what it looks like and feels like. Design is how it works.",
+    "heroAnnouncement": "Switch your system to Dark Mode for a better experience",
+    "aboutStory": "I make complicated things feel simple, and good products feel a little magical. 5+ years, 15+ clients, and a mild obsession with making software feel effortless to use.",
+    "footerNote": "Handmade with ❤️ in Nepal",
+    "contactCta": "Let's Connect ↗",
+    "aboutHeadline": "An IDF certified Product Designer, crafting experiences that flow.",
+    "loadingScreen": "Yogendra Chaudhary"
   },
   "sectionVisibility": {
     "header": true,
-    "process": true,
-    "footer": true,
-    "about": true,
     "experience": false,
+    "footer": true,
+    "moments": true,
     "work": true,
-    "moments": true
+    "about": true,
+    "process": true
   },
-  "heroName": "yogendra",
-  "linkedin": "https://www.linkedin.com/in/yogendrach",
-  "tagline": "",
-  "projects": [
-    {
-      "id": "p1",
-      "title": "Numira — Accounting & Business Management",
-      "subtitle": "Numira — Accounting & Business Management",
-      "problem": "Designing clearer workflows for accounting and business management, making complex financial tasks easier to understand and navigate.",
-      "impact": "I designed key areas of Numira, including customer and supplier management, purchasing, accounting, and settings. My work covered purchase orders, bills, payments, vouchers, fiscal-year closing, user roles, and security flows.\n\nThe focus was on organizing information-heavy screens, maintaining consistent interaction patterns, and making important financial actions clear and predictable.",
-      "tags": "Product Design / Accounting / User Flows / UI Components",
-      "enabled": true
-    },
-    {
-      "id": "p2",
-      "title": "SOMTU — School of Management, Tribhuvan University",
-      "subtitle": "SOMTU — School of Management, Tribhuvan University",
-      "problem": "A complete responsive university website designed to make academic information, resources, and registration easier to access.",
-      "impact": "I designed the SOMTU website across desktop and mobile, creating 87 screens and 81 component variants.\n\nThe project included academic programs, notices, events, research, resources, and a seven-step registration process. I also developed a comprehensive design reference to support consistency and developer handoff.",
-      "tags": "Web Design / Responsive UI / Design System / Registration Flow",
-      "enabled": true
-    },
-    {
-      "id": "p3",
-      "title": "The Vedic Sewa — Spiritual Services Platform",
-      "subtitle": "The Vedic Sewa — Spiritual Services Platform",
-      "problem": "Designing a connected platform that simplifies spiritual service bookings and interactions between customers and gurus.",
-      "impact": "I designed customer and guru experiences for puja, yatra, and consultation bookings across web and mobile.\n\nThe work included user profiles, booking management, a shop and purchase flow, refunds, livestreams, notifications, and verification processes. Special attention was given to status-based actions, clear navigation, and handling empty, pending, locked, and error states.",
-      "tags": "UI/UX Design / Booking Flows / Web & Mobile / Interaction Design",
-      "enabled": true
-    }
-  ]
+  "images": {
+    "project3": "framerusercontent.com/images/Qz0PfMLlkZPgfWPWG0w1Aj6I8c7f5.png",
+    "project1": "framerusercontent.com/images/JFlxur51MvdnXVwJcmocQgdbRz8f210.png",
+    "ogImage": "framerusercontent.com/images/mE8wUY9AKZAw29HtTltTNM78Y.png",
+    "favicon": "framerusercontent.com/images/HBHFPi1YvOmewl8NVUc4Ff7IXk.png",
+    "project2": "framerusercontent.com/images/3uqfpcZtUI0KOAlHMVjpapzRl8c7f5.png",
+    "avatar": "framerusercontent.com/images/sHYLC5GLvyuqZRvQ521YBEuOos5bd4.png"
+  },
+  "experience": []
 }
