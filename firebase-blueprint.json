@@ -19,12 +19,26 @@
           "type": "object",
           "description": "Flags to enable or disable sections on the portfolio"
         },
+        "texts": {
+          "type": "object",
+          "description": "Customizable copy and story sections"
+        },
+        "images": {
+          "type": "object",
+          "description": "Custom avatar, project, og and favicon image URLs"
+        },
+        "moments": {
+          "type": "object",
+          "description": "Configurable images and videos in the moments and perspectives section above footer"
+        },
         "projects": { "type": "array" },
         "experience": { "type": "array" },
         "skills": { "type": "array" },
+        "contact": { "type": "object" },
+        "footer": { "type": "object" },
         "updatedAt": { "type": "string", "maxLength": 60 }
       },
-      "required": ["name", "title", "email"]
+      "required": ["name"]
     },
     "AdminUser": {
       "title": "AdminUser",

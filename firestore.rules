@@ -15,7 +15,7 @@ service cloud.firestore {
     }
 
     function isBootstrappedAdmin() {
-      return isSignedIn() && request.auth.token.email in ['zanewick123@gmail.com', 'yogendrachaudhary2061@gmail.com'];
+      return isSignedIn() && request.auth.token.email in ['zanewick2080@gmail.com', 'zanewick123@gmail.com', 'yogendrachaudhary2061@gmail.com'];
     }
 
     function isAdmin() {
@@ -27,20 +27,30 @@ service cloud.firestore {
     }
 
     function isValidPortfolio(data) {
-      return data.name is string && data.name.size() <= 100
-        && data.title is string && data.title.size() <= 150
-        && data.email is string && data.email.size() <= 120
-        && (!('heroName' in data) || (data.heroName is string && data.heroName.size() <= 50))
-        && (!('tagline' in data) || (data.tagline is string && data.tagline.size() <= 500))
-        && (!('bio' in data) || (data.bio is string && data.bio.size() <= 2000))
-        && (!('location' in data) || (data.location is string && data.location.size() <= 100))
-        && (!('phone' in data) || (data.phone is string && data.phone.size() <= 50))
-        && (!('linkedin' in data) || (data.linkedin is string && data.linkedin.size() <= 300))
-        && (!('resumeUrl' in data) || (data.resumeUrl is string && data.resumeUrl.size() <= 500))
+      return data.name is string && data.name.size() <= 120
+        && (!('title' in data) || (data.title is string && data.title.size() <= 200))
+        && (!('email' in data) || (data.email is string && data.email.size() <= 150))
+        && (!('heroName' in data) || (data.heroName is string && data.heroName.size() <= 80))
+        && (!('headline' in data) || (data.headline is string && data.headline.size() <= 1000))
+        && (!('heroIntro' in data) || (data.heroIntro is string && data.heroIntro.size() <= 500))
+        && (!('heroDescription' in data) || (data.heroDescription is string && data.heroDescription.size() <= 3000))
+        && (!('tagline' in data) || (data.tagline is string && data.tagline.size() <= 2000))
+        && (!('bio' in data) || (data.bio is string && data.bio.size() <= 6000))
+        && (!('location' in data) || (data.location is string && data.location.size() <= 150))
+        && (!('phone' in data) || (data.phone is string && data.phone.size() <= 80))
+        && (!('linkedin' in data) || (data.linkedin is string && data.linkedin.size() <= 500))
+        && (!('linkedinHandle' in data) || (data.linkedinHandle is string && data.linkedinHandle.size() <= 300))
+        && (!('resumeUrl' in data) || (data.resumeUrl is string && data.resumeUrl.size() <= 1000))
         && (!('sectionVisibility' in data) || (data.sectionVisibility is map))
-        && (!('projects' in data) || (data.projects is list && data.projects.size() <= 20))
-        && (!('experience' in data) || (data.experience is list && data.experience.size() <= 20))
-        && (!('skills' in data) || (data.skills is list && data.skills.size() <= 20));
+        && (!('texts' in data) || (data.texts is map))
+        && (!('images' in data) || (data.images is map))
+        && (!('moments' in data) || (data.moments is map))
+        && (!('projects' in data) || (data.projects is list && data.projects.size() <= 30))
+        && (!('experience' in data) || (data.experience is list && data.experience.size() <= 30))
+        && (!('skills' in data) || (data.skills is list && data.skills.size() <= 30))
+        && (!('contact' in data) || (data.contact is map))
+        && (!('footer' in data) || (data.footer is map))
+        && (!('updatedAt' in data) || (data.updatedAt is string && data.updatedAt.size() <= 100));
     }
 
     match /portfolio/{docId} {

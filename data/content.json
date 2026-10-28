@@ -2,168 +2,108 @@
   "name": "Yogendra Chaudhary",
   "heroName": "yogendra",
   "title": "UI/UX & Product Designer",
-  "headline": "UI/UX & Product Designer focused on creating intuitive, functional, and user-friendly digital experiences.",
-  "heroIntro": "Hello! 👋 I'm",
-  "heroDescription": "I turn complex workflows into simple, meaningful digital experiences. From accounting software to university websites and service platforms, I focus on usability, clear interactions, and thoughtful design details that make products easier to use.",
+  "tagline": "",
+  "bio": "",
   "location": "Kathmandu, Nepal",
-  "headerTopRight": "Designed with care ❤️ in Kathmandu, Nepal",
   "email": "yogendrachaudhary2061@gmail.com",
   "phone": "9843688407",
   "linkedin": "https://www.linkedin.com/in/yogendrach",
-  "linkedinHandle": "linkedin.com/in/yogendrach",
   "resumeUrl": "/assets/aistudio/Yogendra_Chaudhary_CV_cc247373.pdf",
   "sectionVisibility": {
     "header": true,
     "work": true,
     "process": true,
-    "experience": true,
+    "experience": false,
     "about": true,
+    "moments": true,
     "footer": true
   },
-  "featuredWorkNav": "Featured Work [03]",
-  "scrollText": "Scroll ↓",
+  "texts": {
+    "greeting": "Hello! 👋 I'm",
+    "loadingScreen": "Yogendra Chaudhary",
+    "heroAnnouncement": "Switch your system to Dark Mode for a better experience",
+    "aboutHeadline": "An IDF certified Product Designer, crafting experiences that flow.",
+    "aboutStory": "I make complicated things feel simple, and good products feel a little magical. 5+ years, 15+ clients, and a mild obsession with making software feel effortless to use.",
+    "processDesc": "Design is not just what it looks like and feels like. Design is how it works.",
+    "contactCta": "Let's Connect ↗",
+    "footerNote": "Handmade with ❤️ in Nepal",
+    "footerCopyright": "© 2026 Yogendra Chaudhary. All rights reserved."
+  },
+  "images": {
+    "avatar": "framerusercontent.com/images/sHYLC5GLvyuqZRvQ521YBEuOos5bd4.png",
+    "project1": "framerusercontent.com/images/JFlxur51MvdnXVwJcmocQgdbRz8f210.png",
+    "project2": "framerusercontent.com/images/3uqfpcZtUI0KOAlHMVjpapzRl8c7f5.png",
+    "project3": "framerusercontent.com/images/Qz0PfMLlkZPgfWPWG0w1Aj6I8c7f5.png",
+    "ogImage": "framerusercontent.com/images/mE8wUY9AKZAw29HtTltTNM78Y.png",
+    "favicon": "framerusercontent.com/images/HBHFPi1YvOmewl8NVUc4Ff7IXk.png"
+  },
+  "moments": {
+    "heading": "Moments & Perspectives",
+    "enabled": true,
+    "items": [
+      {
+        "id": "m1",
+        "type": "image",
+        "title": "A boat in the sea",
+        "caption": "Coastal perspective",
+        "url": "framerusercontent.com/images/ehOmNLWqfLr0ru8zjAdTwZ52LSwa509.png?width=1440&height=965",
+        "enabled": true
+      },
+      {
+        "id": "m2",
+        "type": "image",
+        "title": "Skating on one leg",
+        "caption": "Balance and motion",
+        "url": "framerusercontent.com/images/kSvhhUViVRGA321n0FArKUn7BE7184.png?width=1348&height=646",
+        "enabled": true
+      },
+      {
+        "id": "m3",
+        "type": "image",
+        "title": "Riding a bicycle with V sign",
+        "caption": "Joyful street exploration",
+        "url": "framerusercontent.com/images/9klKm3Jbw0xGpRRdhwzNs4zc1Ac8d1.png?width=1440&height=1467",
+        "enabled": true
+      },
+      {
+        "id": "m4",
+        "type": "video",
+        "title": "Creative Perspective Reel",
+        "caption": "Perspective loop reel",
+        "url": "https://framerusercontent.com/assets/90dOuPDtqqlxo7jejBanpUEPmc.mp4",
+        "enabled": true
+      }
+    ]
+  },
   "projects": [
     {
       "id": "p1",
-      "number": "01",
-      "name": "Numira",
-      "category": "Product Design / Business Management Software",
       "title": "Numira — Accounting & Business Management",
       "subtitle": "Numira — Accounting & Business Management",
-      "shortDescription": "Designing clearer workflows for accounting and business management, making complex financial tasks easier to understand and navigate.",
-      "detailedDescription": "I designed key areas of Numira, including customer and supplier management, purchasing, accounting, and settings. My work covered purchase orders, bills, payments, vouchers, fiscal-year closing, user roles, and security flows.\n\nThe focus was on organizing information-heavy screens, maintaining consistent interaction patterns, and making important financial actions clear and predictable.",
       "problem": "Designing clearer workflows for accounting and business management, making complex financial tasks easier to understand and navigate.",
       "impact": "I designed key areas of Numira, including customer and supplier management, purchasing, accounting, and settings. My work covered purchase orders, bills, payments, vouchers, fiscal-year closing, user roles, and security flows.\n\nThe focus was on organizing information-heavy screens, maintaining consistent interaction patterns, and making important financial actions clear and predictable.",
       "tags": "Product Design / Accounting / User Flows / UI Components",
-      "cta": "Explore Project ↗",
-      "url": "/perro.html",
       "enabled": true
     },
     {
       "id": "p2",
-      "number": "02",
-      "name": "SOMTU",
-      "category": "Website & Product Design / Education",
       "title": "SOMTU — School of Management, Tribhuvan University",
       "subtitle": "SOMTU — School of Management, Tribhuvan University",
-      "shortDescription": "A complete responsive university website designed to make academic information, resources, and registration easier to access.",
-      "detailedDescription": "I designed the SOMTU website across desktop and mobile, creating 87 screens and 81 component variants.\n\nThe project included academic programs, notices, events, research, resources, and a seven-step registration process. I also developed a comprehensive design reference to support consistency and developer handoff.",
       "problem": "A complete responsive university website designed to make academic information, resources, and registration easier to access.",
       "impact": "I designed the SOMTU website across desktop and mobile, creating 87 screens and 81 component variants.\n\nThe project included academic programs, notices, events, research, resources, and a seven-step registration process. I also developed a comprehensive design reference to support consistency and developer handoff.",
       "tags": "Web Design / Responsive UI / Design System / Registration Flow",
-      "cta": "Explore Project ↗",
-      "url": "/mercore.html",
       "enabled": true
     },
     {
       "id": "p3",
-      "number": "03",
-      "name": "The Vedic Sewa",
-      "category": "Product Design / Services Platform",
       "title": "The Vedic Sewa — Spiritual Services Platform",
       "subtitle": "The Vedic Sewa — Spiritual Services Platform",
-      "shortDescription": "Designing a connected platform that simplifies spiritual service bookings and interactions between customers and gurus.",
-      "detailedDescription": "I designed customer and guru experiences for puja, yatra, and consultation bookings across web and mobile.\n\nThe work included user profiles, booking management, a shop and purchase flow, refunds, livestreams, notifications, and verification processes. Special attention was given to status-based actions, clear navigation, and handling empty, pending, locked, and error states.",
       "problem": "Designing a connected platform that simplifies spiritual service bookings and interactions between customers and gurus.",
       "impact": "I designed customer and guru experiences for puja, yatra, and consultation bookings across web and mobile.\n\nThe work included user profiles, booking management, a shop and purchase flow, refunds, livestreams, notifications, and verification processes. Special attention was given to status-based actions, clear navigation, and handling empty, pending, locked, and error states.",
       "tags": "UI/UX Design / Booking Flows / Web & Mobile / Interaction Design",
-      "cta": "Explore Project ↗",
-      "url": "/perro-deepdive.html",
       "enabled": true
     }
   ],
-  "about": {
-    "heading": "About",
-    "mainDescription": "Hi, I'm Yogendra Chaudhary, a UI/UX and Product Designer who enjoys simplifying complex digital experiences.\n\nI started my professional design journey at Aarawan Media & Tech, where I completed a three-month UI/UX internship and was appointed Junior UI/UX Designer.\n\nI work on user flows, interface design, reusable components, and interaction patterns, with a focus on usability and consistency. I enjoy collaborating with developers, refining designs through feedback, and turning ideas into practical digital products.",
-    "stats": [
-      {
-        "value": "03",
-        "label": "Selected Projects"
-      },
-      {
-        "value": "87",
-        "label": "SOMTU Screens Designed"
-      },
-      {
-        "value": "81",
-        "label": "SOMTU Component Variants"
-      }
-    ]
-  },
-  "designProcess": {
-    "heading": "Design Process",
-    "intro": "My design process focuses on understanding the problem before shaping the interface. I work through user flows, design systems, interaction details, and continuous refinement to create products that are both useful and consistent.",
-    "steps": [
-      {
-        "number": "01",
-        "title": "Systems Thinking",
-        "description": "I break down complex workflows into clear, connected experiences, ensuring that information, actions, and interface states work together logically."
-      },
-      {
-        "number": "02",
-        "title": "User Research",
-        "description": "I use usability testing, interface reviews, and feedback to identify friction, understand user needs, and improve the overall experience."
-      },
-      {
-        "number": "03",
-        "title": "Interaction Design",
-        "description": "I design user flows and interface interactions that make navigation intuitive, actions predictable, and everyday tasks easier to complete."
-      },
-      {
-        "number": "04",
-        "title": "Cross-functional Collaboration",
-        "description": "I collaborate with developers to communicate design decisions, maintain consistency, and support the accurate implementation of digital products."
-      }
-    ]
-  },
-  "skills": [
-    {
-      "id": "s1",
-      "title": "UX Design",
-      "description": "User Flows / Workflow Design / Usability Testing / Interaction Design",
-      "enabled": true
-    },
-    {
-      "id": "s2",
-      "title": "UI Design",
-      "description": "Interface Design / Typography / Layout / Visual Hierarchy / UI Components",
-      "enabled": true
-    },
-    {
-      "id": "s3",
-      "title": "Design Systems",
-      "description": "Reusable Components / Component Consistency / UI States / Design Iteration",
-      "enabled": true
-    },
-    {
-      "id": "s4",
-      "title": "Tools & Collaboration",
-      "description": "Figma / Adobe Photoshop / Adobe Illustrator / Developer Handoff / Cross-functional Collaboration",
-      "enabled": true
-    }
-  ],
-  "skillsAndTools": {
-    "heading": "Skills & Tools",
-    "description": "My skill set combines user experience thinking, visual design, reusable components, and practical collaboration to build clear and consistent interfaces.",
-    "categories": [
-      {
-        "category": "UX Design",
-        "items": "User Flows / Workflow Design / Usability Testing / Interaction Design"
-      },
-      {
-        "category": "UI Design",
-        "items": "Interface Design / Typography / Layout / Visual Hierarchy / UI Components"
-      },
-      {
-        "category": "Design Systems",
-        "items": "Reusable Components / Component Consistency / UI States / Design Iteration"
-      },
-      {
-        "category": "Tools & Collaboration",
-        "items": "Figma / Adobe Photoshop / Adobe Illustrator / Developer Handoff / Cross-functional Collaboration"
-      }
-    ]
-  },
   "experience": [
     {
       "id": "e1",
@@ -190,35 +130,31 @@
       "enabled": true
     }
   ],
-  "contact": {
-    "heading": "Let's work together.",
-    "description": "Have a product idea or a design challenge? I'd love to hear about it. Let's discuss how thoughtful design can make your digital experience clearer, easier, and more useful.",
-    "cta": "Let's Connect ↗",
-    "email": "yogendrachaudhary2061@gmail.com",
-    "links": [
-      {
-        "label": "LinkedIn ↗",
-        "url": "https://www.linkedin.com/in/yogendrach"
-      },
-      {
-        "label": "Resume ↗",
-        "url": "/assets/aistudio/Yogendra_Chaudhary_CV_cc247373.pdf"
-      },
-      {
-        "label": "Portfolio ↗",
-        "url": "#"
-      }
-    ]
-  },
-  "footer": {
-    "description": "Thoughtful interfaces. Clear interactions. Better digital experiences.",
-    "email": "yogendrachaudhary2061@gmail.com",
-    "linkedin": "linkedin.com/in/yogendrach",
-    "copyright": "© 2026 Yogendra Chaudhary. All rights reserved.",
-    "backToTop": "↑ Back to top"
-  },
-  "seo": {
-    "title": "Yogendra Chaudhary | UI/UX & Product Designer",
-    "description": "Explore the portfolio of Yogendra Chaudhary, a UI/UX and Product Designer specializing in user flows, intuitive interfaces, design systems, and digital product experiences."
-  }
+  "skills": [
+    {
+      "id": "s1",
+      "title": "UX Design",
+      "description": "User Flows / Workflow Design / Usability Testing / Interaction Design",
+      "enabled": true
+    },
+    {
+      "id": "s2",
+      "title": "UI Design",
+      "description": "Interface Design / Typography / Layout / Visual Hierarchy / UI Components",
+      "enabled": true
+    },
+    {
+      "id": "s3",
+      "title": "Design Systems",
+      "description": "Reusable Components / Component Consistency / UI States / Design Iteration",
+      "enabled": true
+    },
+    {
+      "id": "s4",
+      "title": "Tools & Collaboration",
+      "description": "Figma / Adobe Photoshop / Adobe Illustrator / Developer Handoff / Cross-functional Collaboration",
+      "enabled": true
+    }
+  ],
+  "updatedAt": "2026-10-28T12:56:56.338Z"
 }

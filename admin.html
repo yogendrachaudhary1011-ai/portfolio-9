@@ -538,6 +538,7 @@
     <button class="tab-btn" onclick="switchTab('profile')">Hero & Identity</button>
     <button class="tab-btn" onclick="switchTab('texts')">Website Texts</button>
     <button class="tab-btn" onclick="switchTab('images')">Images & Media</button>
+    <button class="tab-btn" onclick="switchTab('moments')">Moments & Perspectives</button>
     <button class="tab-btn" onclick="switchTab('contact')">Contact & Links</button>
     <button class="tab-btn" onclick="switchTab('projects')">Featured Projects</button>
     <button class="tab-btn" onclick="switchTab('experience')">Work Experience</button>
@@ -616,6 +617,20 @@
         </div>
         <label class="switch">
           <input type="checkbox" id="sec-about" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="switch-row">
+        <div class="switch-info">
+          <div class="switch-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="2.18" ry="2.18"></rect><line x1="7" y1="2" x2="7" y2="22"></line><line x1="17" y1="2" x2="17" y2="22"></line><line x1="2" y1="12" x2="22" y2="12"></line><line x1="2" y1="7" x2="7" y2="7"></line><line x1="2" y1="17" x2="7" y2="17"></line><line x1="17" y1="17" x2="22" y2="17"></line><line x1="17" y1="7" x2="22" y2="7"></line></svg>
+            Moments & Perspectives Section (Above Footer)
+          </div>
+          <div class="switch-desc">Displays the sliding photography and video perspectives gallery ticker located right above the footer.</div>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="sec-moments" checked>
           <span class="slider"></span>
         </label>
       </div>
@@ -906,6 +921,18 @@
     </div>
   </div>
 
+  <!-- TAB: Moments & Perspectives -->
+  <div id="tab-moments" class="tab-content">
+    <div class="card">
+      <div class="card-title">
+        <span>Moments & Perspectives Media Gallery (Above Footer)</span>
+        <button type="button" class="btn btn-secondary" onclick="addMomentItem()">+ Add Moment</button>
+      </div>
+      <div class="card-description">Customize images and looping video clips (.mp4, .webm) in the sliding perspective ticker situated right above the footer. Upload files directly or enter media URLs. Changes save permanently to Cloud Firestore database.</div>
+      <div id="moments-container"></div>
+    </div>
+  </div>
+
   <!-- TAB 4: Contact & Links -->
   <div id="tab-contact" class="tab-content">
     <div class="card">
@@ -1011,12 +1038,51 @@ const defaultContent = {
     ogImage: "framerusercontent.com/images/mE8wUY9AKZAw29HtTltTNM78Y.png",
     favicon: "framerusercontent.com/images/HBHFPi1YvOmewl8NVUc4Ff7IXk.png"
   },
+  moments: {
+    heading: "Moments & Perspectives",
+    enabled: true,
+    items: [
+      {
+        id: "m1",
+        type: "image",
+        title: "A boat in the sea",
+        caption: "Coastal perspective",
+        url: "framerusercontent.com/images/ehOmNLWqfLr0ru8zjAdTwZ52LSwa509.png?width=1440&height=965",
+        enabled: true
+      },
+      {
+        id: "m2",
+        type: "image",
+        title: "Skating on one leg",
+        caption: "Balance and motion",
+        url: "framerusercontent.com/images/kSvhhUViVRGA321n0FArKUn7BE7184.png?width=1348&height=646",
+        enabled: true
+      },
+      {
+        id: "m3",
+        type: "image",
+        title: "Riding a bicycle with V sign",
+        caption: "Joyful street exploration",
+        url: "framerusercontent.com/images/9klKm3Jbw0xGpRRdhwzNs4zc1Ac8d1.png?width=1440&height=1467",
+        enabled: true
+      },
+      {
+        id: "m4",
+        type: "video",
+        title: "Creative Perspective Reel",
+        caption: "Perspective loop reel",
+        url: "https://framerusercontent.com/assets/90dOuPDtqqlxo7jejBanpUEPmc.mp4",
+        enabled: true
+      }
+    ]
+  },
   sectionVisibility: {
     header: true,
     work: true,
     process: true,
     experience: true,
     about: true,
+    moments: true,
     footer: true
   },
   projects: [
@@ -1227,11 +1293,14 @@ function populateForm(data) {
   document.getElementById('sec-process').checked = sec.process !== false;
   document.getElementById('sec-experience').checked = sec.experience !== false;
   document.getElementById('sec-about').checked = sec.about !== false;
+  const secMomentsEl = document.getElementById('sec-moments');
+  if (secMomentsEl) secMomentsEl.checked = sec.moments !== false && (!data.moments || data.moments.enabled !== false);
   document.getElementById('sec-footer').checked = sec.footer !== false;
 
   renderProjects(data.projects || defaultContent.projects);
   renderExperience(data.experience || defaultContent.experience);
   renderSkills(data.skills || defaultContent.skills);
+  renderMoments((data.moments && data.moments.items) || defaultContent.moments.items);
 }
 
 function setImgFieldAndPreview(inputId, previewId, val, defaultVal) {
@@ -1279,12 +1348,31 @@ function collectFormData() {
     });
   });
 
+  const momentsItems = [];
+  document.querySelectorAll('#moments-container .item-card').forEach((el, i) => {
+    momentsItems.push({
+      id: `m${i + 1}`,
+      type: el.querySelector('.moment-type')?.value || 'image',
+      title: el.querySelector('.moment-title')?.value.trim() || '',
+      caption: el.querySelector('.moment-title')?.value.trim() || '',
+      url: el.querySelector('.moment-url')?.value.trim() || '',
+      enabled: el.querySelector('.moment-enabled')?.checked !== false
+    });
+  });
+
+  const moments = {
+    heading: 'Moments & Perspectives',
+    enabled: document.getElementById('sec-moments')?.checked !== false,
+    items: momentsItems.length > 0 ? momentsItems : defaultContent.moments.items
+  };
+
   const sectionVisibility = {
     header: document.getElementById('sec-header')?.checked !== false,
     work: document.getElementById('sec-work')?.checked !== false,
     process: document.getElementById('sec-process')?.checked !== false,
     experience: document.getElementById('sec-experience')?.checked !== false,
     about: document.getElementById('sec-about')?.checked !== false,
+    moments: document.getElementById('sec-moments')?.checked !== false,
     footer: document.getElementById('sec-footer')?.checked !== false
   };
 
@@ -1323,6 +1411,7 @@ function collectFormData() {
     sectionVisibility,
     texts,
     images,
+    moments,
     projects,
     experience,
     skills,
@@ -1391,17 +1480,24 @@ async function performDatabaseSave(isAuto = true) {
   try {
     // 1. Direct write to Firestore Database
     if (db) {
-      await setDoc(doc(db, 'portfolio', 'main'), payload);
-      dbSuccess = true;
+      try {
+        await setDoc(doc(db, 'portfolio', 'main'), payload);
+        dbSuccess = true;
+      } catch (fErr) {
+        console.warn('Firestore client write note:', fErr.message);
+      }
     }
-    // 2. Also save to backend database (/api/content)
+    // 2. Also save to backend database which writes to Firestore cloud database
     try {
       const res = await fetch('/api/content', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
-      if (res.ok) dbSuccess = true;
+      if (res.ok) {
+        const resJson = await res.json();
+        if (resJson.cloudSaved || resJson.success) dbSuccess = true;
+      }
     } catch(e) {}
 
     // Dispatch cross-tab storage notification for instantaneous live preview sync
@@ -1411,23 +1507,10 @@ async function performDatabaseSave(isAuto = true) {
 
     updateAutoSaveStatus('saved');
     if (!isAuto) {
-      showToast('All changes saved to database successfully!', 'success');
+      showToast('All changes permanently saved to Cloud Database!', 'success');
     }
   } catch (err) {
     console.error('Database save error:', err);
-    try {
-      const res = await fetch('/api/content', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-      if (res.ok) {
-        updateAutoSaveStatus('saved');
-        if (!isAuto) showToast('Saved to backend database!', 'success');
-        return;
-      }
-    } catch(e) {}
-
     updateAutoSaveStatus('error', err.message);
     if (!isAuto) {
       showToast('Database save error: ' + err.message, 'error');
@@ -1445,22 +1528,36 @@ window.savePortfolioContent = async function(isAuto = false) {
   await performDatabaseSave(isAuto);
 };
 
-window.handleImageFile = function(inputEl, targetInputId, previewImgId) {
+window.handleImageFile = async function(inputEl, targetInputId, previewImgId) {
   const file = inputEl.files[0];
   if (!file) return;
-  if (file.size > 5 * 1024 * 1024) {
-    showToast('File size is larger than 5MB. Please choose a smaller image.', 'error');
+  if (file.size > 25 * 1024 * 1024) {
+    showToast('File size is larger than 25MB. Please choose a smaller image.', 'error');
     return;
   }
+  showToast('Uploading image to cloud storage...', 'info');
   const reader = new FileReader();
-  reader.onload = function(e) {
-    const dataUrl = e.target.result;
-    const targetInput = document.getElementById(targetInputId);
-    if (targetInput) targetInput.value = dataUrl;
-    const preview = document.getElementById(previewImgId);
-    if (preview) preview.src = dataUrl;
-    triggerAutoSave(100);
-    showToast('Image uploaded and applied! Auto-saving to database...', 'success');
+  reader.onload = async function(e) {
+    try {
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ filename: file.name, data: e.target.result })
+      });
+      const data = await res.json();
+      if (data && data.url) {
+        const targetInput = document.getElementById(targetInputId);
+        if (targetInput) targetInput.value = data.url;
+        const preview = document.getElementById(previewImgId);
+        if (preview) preview.src = data.url;
+        triggerAutoSave(100);
+        showToast('Image uploaded and applied! Auto-saving to cloud database...', 'success');
+      } else {
+        showToast('Upload error: ' + (data?.error || 'Failed'), 'error');
+      }
+    } catch(err) {
+      showToast('Upload failed: ' + err.message, 'error');
+    }
   };
   reader.readAsDataURL(file);
 };
@@ -1472,6 +1569,217 @@ window.resetImage = function(targetInputId, previewImgId, defaultUrl) {
   if (preview) preview.src = defaultUrl;
   triggerAutoSave(100);
   showToast('Image reset to original.', 'success');
+};
+
+function getMomentPreviewHtml(type, url) {
+  if (!url) return '<span style="color:var(--text-muted);font-size:12px;">No media selected</span>';
+  const isVid = type === 'video' || url.includes('.mp4') || url.includes('.webm');
+  if (isVid) {
+    return `<video src="${escapeHtml(url)}" controls autoplay loop muted style="width:100%;height:100%;max-height:190px;object-fit:cover;border-radius:8px;background:#000;"></video>`;
+  }
+  return `<img src="${escapeHtml(url)}" alt="preview" style="width:100%;height:100%;max-height:190px;object-fit:cover;border-radius:8px;" onerror="this.alt='Unable to load preview';">`;
+}
+
+function renderMoments(items) {
+  const container = document.getElementById('moments-container');
+  if (!container) return;
+  container.innerHTML = '';
+  (items || []).forEach((m, idx) => {
+    const el = document.createElement('div');
+    el.className = 'item-card';
+    el.innerHTML = `
+      <div class="item-header">
+        <span class="item-number">Moment #${idx + 1}</span>
+        <div class="item-controls">
+          <label style="display:inline-flex; align-items:center; gap:6px; font-size:12px; cursor:pointer;">
+            <input type="checkbox" class="moment-enabled" ${m.enabled !== false ? 'checked' : ''}>
+            <span>Visible</span>
+          </label>
+          <button type="button" class="btn btn-danger" style="padding: 4px 8px; font-size: 11px;" onclick="removeMoment(${idx})">Delete</button>
+        </div>
+      </div>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Media Type</label>
+          <select class="moment-type" id="moment-type-${idx}" onchange="onMomentTypeChange(${idx})">
+            <option value="image" ${m.type === 'image' || (!m.type && !m.url?.includes('.mp4')) ? 'selected' : ''}>Photo / Image</option>
+            <option value="video" ${m.type === 'video' || m.url?.includes('.mp4') ? 'selected' : ''}>Looping Video (.mp4 / .webm)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Title / Caption</label>
+          <input type="text" class="moment-title" value="${escapeHtml(m.title || m.caption || '')}" placeholder="e.g. Coastal journey / Skater">
+        </div>
+        <div class="form-group full">
+          <label>Media File or URL</label>
+          <input type="text" class="moment-url" id="moment-url-${idx}" value="${escapeHtml(m.url || '')}" placeholder="Paste URL or upload file below" oninput="updateMomentPreview(${idx})">
+        </div>
+        <div class="form-group full" style="display:flex; flex-direction:row; gap:10px; flex-wrap:wrap; align-items:center;">
+          <button type="button" class="btn btn-secondary" onclick="document.getElementById('moment-file-${idx}').click()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+            Upload Image / Video
+          </button>
+          <input type="file" id="moment-file-${idx}" accept="image/*,video/mp4,video/webm" style="display:none;" onchange="uploadMomentFile(this, ${idx})">
+          
+          <select style="width:auto; padding:7px 12px; font-size:12px;" onchange="applyMomentPreset(this, ${idx})">
+            <option value="">Choose preset...</option>
+            <option value="framerusercontent.com/images/ehOmNLWqfLr0ru8zjAdTwZ52LSwa509.png?width=1440&height=965">Preset: Boat in the Sea (Image)</option>
+            <option value="framerusercontent.com/images/kSvhhUViVRGA321n0FArKUn7BE7184.png?width=1348&height=646">Preset: Skater (Image)</option>
+            <option value="framerusercontent.com/images/9klKm3Jbw0xGpRRdhwzNs4zc1Ac8d1.png?width=1440&height=1467">Preset: Bicycle Journey (Image)</option>
+            <option value="https://framerusercontent.com/assets/90dOuPDtqqlxo7jejBanpUEPmc.mp4">Preset: Creative Perspective (Video)</option>
+            <option value="https://framerusercontent.com/assets/3QXjb7LrFCAn4X2Bk7Ry2YvbVY4.mp4">Preset: Alternate Perspective (Video)</option>
+          </select>
+        </div>
+        <div class="form-group full">
+          <label>Live Preview</label>
+          <div id="moment-preview-box-${idx}" class="image-preview-box" style="height:190px;">
+            ${getMomentPreviewHtml(m.type, m.url)}
+          </div>
+        </div>
+      </div>
+    `;
+    container.appendChild(el);
+  });
+}
+
+window.onMomentTypeChange = function(idx) {
+  updateMomentPreview(idx);
+  triggerAutoSave(100);
+};
+
+window.updateMomentPreview = function(idx) {
+  const url = (document.getElementById(`moment-url-${idx}`)?.value || '').trim();
+  const type = document.getElementById(`moment-type-${idx}`)?.value || 'image';
+  const box = document.getElementById(`moment-preview-box-${idx}`);
+  if (box) {
+    box.innerHTML = getMomentPreviewHtml(type, url);
+  }
+};
+
+window.applyMomentPreset = function(selectEl, idx) {
+  const val = selectEl.value;
+  if (!val) return;
+  const urlInput = document.getElementById(`moment-url-${idx}`);
+  const typeSelect = document.getElementById(`moment-type-${idx}`);
+  if (val.includes('.mp4')) {
+    if (typeSelect) typeSelect.value = 'video';
+  } else {
+    if (typeSelect) typeSelect.value = 'image';
+  }
+  if (urlInput) urlInput.value = val;
+  updateMomentPreview(idx);
+  triggerAutoSave(100);
+};
+
+window.uploadMomentFile = async function(inputEl, idx) {
+  const file = inputEl.files[0];
+  if (!file) return;
+  if (file.size > 25 * 1024 * 1024) {
+    showToast('File size is larger than 25MB. Please choose a smaller file.', 'error');
+    return;
+  }
+  showToast('Uploading ' + file.name + ' to cloud storage...', 'info');
+  const reader = new FileReader();
+  reader.onload = async function(e) {
+    try {
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ filename: file.name, data: e.target.result })
+      });
+      const data = await res.json();
+      if (data && data.url) {
+        const urlInput = document.getElementById(`moment-url-${idx}`);
+        if (urlInput) urlInput.value = data.url;
+        const typeSelect = document.getElementById(`moment-type-${idx}`);
+        if (typeSelect) {
+          if (file.type.startsWith('video/') || file.name.endsWith('.mp4') || file.name.endsWith('.webm')) {
+            typeSelect.value = 'video';
+          } else {
+            typeSelect.value = 'image';
+          }
+        }
+        updateMomentPreview(idx);
+        triggerAutoSave(100);
+        showToast('Media uploaded & applied! Auto-saving to cloud database...', 'success');
+      } else {
+        showToast('Upload error: ' + (data?.error || 'Failed'), 'error');
+      }
+    } catch (err) {
+      showToast('Upload failed: ' + err.message, 'error');
+    }
+  };
+  reader.readAsDataURL(file);
+};
+
+window.addMomentItem = function() {
+  const container = document.getElementById('moments-container');
+  const count = container ? container.children.length : 0;
+  const idx = count;
+  const m = { title: "New Moment", url: "", type: "image", enabled: true };
+  const el = document.createElement('div');
+  el.className = 'item-card';
+  el.innerHTML = `
+    <div class="item-header">
+      <span class="item-number">Moment #${idx + 1}</span>
+      <div class="item-controls">
+        <label style="display:inline-flex; align-items:center; gap:6px; font-size:12px; cursor:pointer;">
+          <input type="checkbox" class="moment-enabled" checked>
+          <span>Visible</span>
+        </label>
+        <button type="button" class="btn btn-danger" style="padding: 4px 8px; font-size: 11px;" onclick="this.closest('.item-card').remove(); triggerAutoSave(0);">Delete</button>
+      </div>
+    </div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Media Type</label>
+        <select class="moment-type" id="moment-type-${idx}" onchange="onMomentTypeChange(${idx})">
+          <option value="image">Photo / Image</option>
+          <option value="video">Looping Video (.mp4 / .webm)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Title / Caption</label>
+        <input type="text" class="moment-title" value="${m.title}" placeholder="e.g. Coastal journey / Skater">
+      </div>
+      <div class="form-group full">
+        <label>Media File or URL</label>
+        <input type="text" class="moment-url" id="moment-url-${idx}" value="" placeholder="Paste URL or upload file below" oninput="updateMomentPreview(${idx})">
+      </div>
+      <div class="form-group full" style="display:flex; flex-direction:row; gap:10px; flex-wrap:wrap; align-items:center;">
+        <button type="button" class="btn btn-secondary" onclick="document.getElementById('moment-file-${idx}').click()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+          Upload Image / Video
+        </button>
+        <input type="file" id="moment-file-${idx}" accept="image/*,video/mp4,video/webm" style="display:none;" onchange="uploadMomentFile(this, ${idx})">
+        
+        <select style="width:auto; padding:7px 12px; font-size:12px;" onchange="applyMomentPreset(this, ${idx})">
+          <option value="">Choose preset...</option>
+          <option value="framerusercontent.com/images/ehOmNLWqfLr0ru8zjAdTwZ52LSwa509.png?width=1440&height=965">Preset: Boat in the Sea (Image)</option>
+          <option value="framerusercontent.com/images/kSvhhUViVRGA321n0FArKUn7BE7184.png?width=1348&height=646">Preset: Skater (Image)</option>
+          <option value="framerusercontent.com/images/9klKm3Jbw0xGpRRdhwzNs4zc1Ac8d1.png?width=1440&height=1467">Preset: Bicycle Journey (Image)</option>
+          <option value="https://framerusercontent.com/assets/90dOuPDtqqlxo7jejBanpUEPmc.mp4">Preset: Creative Perspective (Video)</option>
+          <option value="https://framerusercontent.com/assets/3QXjb7LrFCAn4X2Bk7Ry2YvbVY4.mp4">Preset: Alternate Perspective (Video)</option>
+        </select>
+      </div>
+      <div class="form-group full">
+        <label>Live Preview</label>
+        <div id="moment-preview-box-${idx}" class="image-preview-box" style="height:190px;">
+          ${getMomentPreviewHtml('image', '')}
+        </div>
+      </div>
+    </div>
+  `;
+  container.appendChild(el);
+  triggerAutoSave(0);
+};
+
+window.removeMoment = function(idx) {
+  const cards = document.querySelectorAll('#moments-container .item-card');
+  if (cards[idx]) {
+    cards[idx].remove();
+    triggerAutoSave(0);
+  }
 };
 
 function renderProjects(projects) {

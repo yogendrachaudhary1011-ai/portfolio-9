@@ -97,9 +97,107 @@ async function tryServe(pathname, req, res) {
   }
 }
 
+function fromFirestoreValue(val) {
+  if (!val) return null;
+  if ('stringValue' in val) return val.stringValue;
+  if ('booleanValue' in val) return val.booleanValue;
+  if ('integerValue' in val) return Number(val.integerValue);
+  if ('doubleValue' in val) return val.doubleValue;
+  if ('arrayValue' in val) return (val.arrayValue.values || []).map(fromFirestoreValue);
+  if ('mapValue' in val) return fromFirestoreFields(val.mapValue.fields);
+  if ('nullValue' in val) return null;
+  return null;
+}
+
+function fromFirestoreFields(fields) {
+  if (!fields) return {};
+  const res = {};
+  for (const [key, val] of Object.entries(fields)) {
+    res[key] = fromFirestoreValue(val);
+  }
+  return res;
+}
+
+function toFirestoreValue(val) {
+  if (val === null || val === undefined) return { nullValue: null };
+  if (typeof val === 'string') return { stringValue: val };
+  if (typeof val === 'boolean') return { booleanValue: val };
+  if (typeof val === 'number') {
+    return Number.isInteger(val) ? { integerValue: String(val) } : { doubleValue: val };
+  }
+  if (Array.isArray(val)) {
+    return { arrayValue: { values: val.map(toFirestoreValue) } };
+  }
+  if (typeof val === 'object') {
+    const fields = {};
+    for (const [k, v] of Object.entries(val)) {
+      fields[k] = toFirestoreValue(v);
+    }
+    return { mapValue: { fields } };
+  }
+  return { stringValue: String(val) };
+}
+
+async function getFirestoreConfig() {
+  try {
+    const text = await readFile(resolve(root, 'firebase-applet-config.json'), 'utf8');
+    const cfg = JSON.parse(text);
+    if (cfg.apiKey && cfg.projectId && cfg.firestoreDatabaseId) return cfg;
+  } catch (e) {}
+  return null;
+}
+
 const server = createServer(async (req, res) => {
   const raw = (req.url || '/').split(/[?#]/)[0];
   const decoded = decodeURIComponent(raw);
+
+  // File upload endpoint for images and videos
+  if (decoded === '/api/upload') {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+    if (req.method === 'OPTIONS') {
+      res.writeHead(204).end();
+      return;
+    }
+
+    if (req.method === 'POST') {
+      let body = '';
+      req.on('data', chunk => { body += chunk; });
+      req.on('end', async () => {
+        try {
+          const parsed = JSON.parse(body);
+          const rawName = (parsed.filename || 'media').replace(/[^a-zA-Z0-9._-]/g, '_');
+          const ext = extname(rawName) || '.png';
+          const baseName = rawName.slice(0, rawName.length - ext.length) || 'media';
+          const filename = `${Date.now()}_${baseName}${ext}`;
+
+          let buffer;
+          if (parsed.data && parsed.data.includes(',')) {
+            const base64Data = parsed.data.split(',')[1];
+            buffer = Buffer.from(base64Data, 'base64');
+          } else if (parsed.data) {
+            buffer = Buffer.from(parsed.data, 'base64');
+          } else {
+            throw new Error('No media data provided');
+          }
+
+          const uploadsDir = resolve(root, 'assets/uploads');
+          await mkdir(uploadsDir, { recursive: true });
+          const filePath = resolve(uploadsDir, filename);
+          await writeFile(filePath, buffer);
+
+          const url = `/assets/uploads/${filename}`;
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ success: true, url, filename }));
+        } catch (e) {
+          res.writeHead(400, { 'Content-Type': 'application/json' }).end(JSON.stringify({ error: e.message }));
+        }
+      });
+      return;
+    }
+  }
 
   if (decoded === '/api/content') {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -112,7 +210,32 @@ const server = createServer(async (req, res) => {
     }
 
     const dataFile = resolve(root, 'data/content.json');
+
     if (req.method === 'GET' || req.method === 'HEAD') {
+      // 1. Try reading live from Cloud Firestore Database first
+      const cfg = await getFirestoreConfig();
+      if (cfg) {
+        try {
+          const firestoreUrl = `https://firestore.googleapis.com/v1/projects/${cfg.projectId}/databases/${cfg.firestoreDatabaseId}/documents/portfolio/main?key=${cfg.apiKey}`;
+          const fRes = await fetch(firestoreUrl);
+          if (fRes.ok) {
+            const doc = await fRes.json();
+            if (doc && doc.fields) {
+              const liveData = fromFirestoreFields(doc.fields);
+              // Cache to local file in background
+              writeFile(dataFile, JSON.stringify(liveData, null, 2), 'utf8').catch(() => {});
+              res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+              if (req.method === 'HEAD') res.end();
+              else res.end(JSON.stringify(liveData));
+              return;
+            }
+          }
+        } catch (fErr) {
+          console.warn('[Firestore cloud read note]', fErr.message);
+        }
+      }
+
+      // Fallback to local data file
       try {
         const text = await readFile(dataFile, 'utf8');
         res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
@@ -132,41 +255,38 @@ const server = createServer(async (req, res) => {
           await mkdir(resolve(root, 'data'), { recursive: true });
           await writeFile(dataFile, JSON.stringify(parsed, null, 2), 'utf8');
 
-          // Sync to Firestore database in background
-          try {
-            const cfg = JSON.parse(await readFile(resolve(root, 'firebase-applet-config.json'), 'utf8'));
-            if (cfg.apiKey && cfg.projectId && cfg.firestoreDatabaseId) {
-              const toFields = obj => {
-                const fields = {};
-                for (const [k, v] of Object.entries(obj)) {
-                  if (typeof v === 'string') fields[k] = { stringValue: v };
-                  else if (typeof v === 'boolean') fields[k] = { booleanValue: v };
-                  else if (typeof v === 'number') fields[k] = { integerValue: String(v) };
-                  else if (Array.isArray(v)) {
-                    fields[k] = {
-                      arrayValue: {
-                        values: v.map(item => ({ mapValue: { fields: toFields(item) } }))
-                      }
-                    };
-                  } else if (typeof v === 'object' && v !== null) {
-                    fields[k] = { mapValue: { fields: toFields(v) } };
-                  }
-                }
-                return fields;
-              };
+          // Sync directly to Cloud Firestore Database
+          let cloudSaved = false;
+          const cfg = await getFirestoreConfig();
+          if (cfg) {
+            try {
+              const fields = {};
+              for (const [k, v] of Object.entries(parsed)) {
+                fields[k] = toFirestoreValue(v);
+              }
               const firestoreUrl = `https://firestore.googleapis.com/v1/projects/${cfg.projectId}/databases/${cfg.firestoreDatabaseId}/documents/portfolio/main?key=${cfg.apiKey}`;
-              await fetch(firestoreUrl, {
+              const fResp = await fetch(firestoreUrl, {
                 method: 'PATCH',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ fields: toFields(parsed) })
+                body: JSON.stringify({ fields })
               });
+              if (fResp.ok) {
+                cloudSaved = true;
+              } else {
+                const errText = await fResp.text();
+                console.warn('[Firestore PATCH error]', fResp.status, errText);
+              }
+            } catch (syncErr) {
+              console.warn('[Firestore sync error]', syncErr.message);
             }
-          } catch (syncErr) {
-            console.warn('Firestore server sync note:', syncErr.message);
           }
 
           res.writeHead(200, { 'Content-Type': 'application/json' });
-          res.end(JSON.stringify({ success: true, message: 'Content saved to database successfully' }));
+          res.end(JSON.stringify({
+            success: true,
+            cloudSaved,
+            message: cloudSaved ? 'Changes permanently saved to Cloud Firestore database.' : 'Saved to database successfully.'
+          }));
         } catch (e) {
           res.writeHead(400, { 'Content-Type': 'application/json' }).end(JSON.stringify({ error: e.message }));
         }
