@@ -1,0 +1,56 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Global catch-all default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isBootstrappedAdmin() {
+      return isSignedIn() && request.auth.token.email in ['zanewick123@gmail.com', 'yogendrachaudhary2061@gmail.com'];
+    }
+
+    function isAdmin() {
+      return isBootstrappedAdmin() || (isSignedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid)));
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function isValidPortfolio(data) {
+      return data.name is string && data.name.size() <= 100
+        && data.title is string && data.title.size() <= 150
+        && data.email is string && data.email.size() <= 120
+        && (!('heroName' in data) || (data.heroName is string && data.heroName.size() <= 50))
+        && (!('tagline' in data) || (data.tagline is string && data.tagline.size() <= 500))
+        && (!('bio' in data) || (data.bio is string && data.bio.size() <= 2000))
+        && (!('location' in data) || (data.location is string && data.location.size() <= 100))
+        && (!('phone' in data) || (data.phone is string && data.phone.size() <= 50))
+        && (!('linkedin' in data) || (data.linkedin is string && data.linkedin.size() <= 300))
+        && (!('resumeUrl' in data) || (data.resumeUrl is string && data.resumeUrl.size() <= 500))
+        && (!('sectionVisibility' in data) || (data.sectionVisibility is map))
+        && (!('projects' in data) || (data.projects is list && data.projects.size() <= 20))
+        && (!('experience' in data) || (data.experience is list && data.experience.size() <= 20))
+        && (!('skills' in data) || (data.skills is list && data.skills.size() <= 20));
+    }
+
+    match /portfolio/{docId} {
+      allow read: if true;
+      allow write: if isValidId(docId) && isValidPortfolio(incoming());
+    }
+
+    match /admins/{adminId} {
+      allow read: if isSignedIn();
+      allow write: if isValidId(adminId) && isAdmin();
+    }
+  }
+}

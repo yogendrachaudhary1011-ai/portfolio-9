@@ -1,0 +1,6 @@
+# Netlify: publish the built website, not the project source or old dist directory.
+[build]
+command = "npm run build"
+publish = "dist"
+
+# Custom routes are defined in dist/_redirects; real missing files use 404.html.

@@ -1,0 +1,16 @@
+# Hosting rewrites: original URL stays visible; page markup is unchanged.
+/index /index.html 200
+/about /index.html 200
+/work /index.html 200
+/projects /index.html 200
+/contact /index.html 200
+/process /index.html 200
+/experience /index.html 200
+/perro /perro.html 200
+/perro-deepdive /perro-deepdive.html 200
+/mercore /mercore.html 200
+/vedic-sewa /perro-deepdive.html 200
+/somtu /mercore.html 200
+/numira /perro.html 200
+/admin /admin.html 200
+/resume /assets/aistudio/Yogendra_Chaudhary_CV_cc247373.pdf 200
