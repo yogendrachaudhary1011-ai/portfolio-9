@@ -163,10 +163,13 @@ const server = createServer(async (req, res) => {
     }
 
     if (req.method === 'POST') {
-      let body = '';
-      req.on('data', chunk => { body += chunk; });
+      const chunks = [];
+      let totalLength = 0;
+      req.on('data', chunk => { chunks.push(chunk); totalLength += chunk.length; });
+      req.on('error', err => { res.writeHead(500, { 'Content-Type': 'application/json' }).end(JSON.stringify({ error: err.message })); });
       req.on('end', async () => {
         try {
+          const body = Buffer.concat(chunks, totalLength).toString('utf8');
           const parsed = JSON.parse(body);
           const rawName = (parsed.filename || 'media').replace(/[^a-zA-Z0-9._-]/g, '_');
           const ext = extname(rawName) || '.png';
@@ -193,6 +196,124 @@ const server = createServer(async (req, res) => {
           res.end(JSON.stringify({ success: true, url, filename }));
         } catch (e) {
           res.writeHead(400, { 'Content-Type': 'application/json' }).end(JSON.stringify({ error: e.message }));
+        }
+      });
+      return;
+    }
+  }
+
+  // Admin authentication endpoints
+  if (decoded === '/api/login' || decoded === '/api/auth/login') {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    if (req.method === 'OPTIONS') { res.writeHead(204).end(); return; }
+
+    if (req.method === 'POST') {
+      let body = '';
+      req.on('data', chunk => { body += chunk; });
+      req.on('end', async () => {
+        try {
+          const { username, password } = JSON.parse(body || '{}');
+          if (!username || !password) {
+            res.writeHead(400, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ success: false, error: 'Username and password are required' }));
+            return;
+          }
+
+          let authData = { username: 'admin', password: 'admin123', name: 'Yogendra Chaudhary', role: 'Super Admin' };
+          const authFile = resolve(root, 'data/admin-auth.json');
+          try {
+            const raw = await readFile(authFile, 'utf8');
+            authData = { ...authData, ...JSON.parse(raw) };
+          } catch(e) {}
+
+          const inputUser = String(username).trim().toLowerCase();
+          const validUsers = [
+            authData.username.toLowerCase(),
+            'admin',
+            'yogendra',
+            'zanewick2080@gmail.com'
+          ];
+
+          if (validUsers.includes(inputUser) && String(password) === String(authData.password)) {
+            const token = 'admin_session_' + Date.now() + '_' + Math.random().toString(36).substring(2, 10);
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({
+              success: true,
+              token,
+              user: {
+                username: authData.username || 'admin',
+                name: authData.name || 'Yogendra Chaudhary',
+                role: authData.role || 'Super Admin'
+              }
+            }));
+          } else {
+            res.writeHead(401, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({
+              success: false,
+              error: 'Invalid username or password. Default username: admin, password: admin123'
+            }));
+          }
+        } catch (err) {
+          res.writeHead(500, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ success: false, error: err.message }));
+        }
+      });
+      return;
+    }
+  }
+
+  if (decoded === '/api/auth/change-credentials') {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    if (req.method === 'OPTIONS') { res.writeHead(204).end(); return; }
+
+    if (req.method === 'POST') {
+      let body = '';
+      req.on('data', chunk => { body += chunk; });
+      req.on('end', async () => {
+        try {
+          const { currentPassword, newUsername, newPassword } = JSON.parse(body || '{}');
+          const authFile = resolve(root, 'data/admin-auth.json');
+          let authData = { username: 'admin', password: 'admin123', name: 'Yogendra Chaudhary', role: 'Super Admin' };
+          try {
+            const raw = await readFile(authFile, 'utf8');
+            authData = { ...authData, ...JSON.parse(raw) };
+          } catch(e) {}
+
+          if (String(currentPassword) !== String(authData.password)) {
+            res.writeHead(403, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({ success: false, error: 'Current password does not match' }));
+            return;
+          }
+
+          if (newUsername && newUsername.trim()) {
+            authData.username = newUsername.trim();
+          }
+          if (newPassword && newPassword.trim()) {
+            if (newPassword.trim().length < 4) {
+              res.writeHead(400, { 'Content-Type': 'application/json' });
+              res.end(JSON.stringify({ success: false, error: 'New password must be at least 4 characters' }));
+              return;
+            }
+            authData.password = newPassword.trim();
+          }
+          authData.updatedAt = new Date().toISOString();
+
+          await mkdir(resolve(root, 'data'), { recursive: true });
+          await writeFile(authFile, JSON.stringify(authData, null, 2), 'utf8');
+
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({
+            success: true,
+            message: 'Credentials updated successfully',
+            username: authData.username
+          }));
+        } catch (err) {
+          res.writeHead(500, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ success: false, error: err.message }));
         }
       });
       return;

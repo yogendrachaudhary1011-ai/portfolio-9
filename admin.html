@@ -50,6 +50,38 @@
       justify-content: space-between;
       gap: 16px;
     }
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      background: #181d26;
+      border: 1px solid var(--card-border);
+      color: #f0f2f5;
+      text-decoration: none;
+      transition: all 0.18s ease;
+      cursor: pointer;
+    }
+    .back-btn svg {
+      transition: transform 0.18s ease;
+    }
+    .back-btn:hover {
+      background: #232a38;
+      border-color: #3b4559;
+      color: #fff;
+    }
+    .back-btn:hover svg {
+      transform: translateX(-3px);
+    }
     .brand {
       display: flex;
       align-items: center;
@@ -480,14 +512,30 @@
 
 <header>
   <div class="header-content">
-    <a href="/" class="brand">
-      <div class="brand-logo">YC</div>
-      <div>
-        <div class="brand-title">Yogendra Chaudhary</div>
-        <div class="brand-subtitle">Portfolio Administration</div>
-      </div>
-    </a>
+    <div class="brand-group">
+      <a href="/" class="back-btn" id="admin-back-btn" title="Back to Portfolio Website">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        <span>Back to Website</span>
+      </a>
+      <a href="/" class="brand" title="Return to Website Homepage">
+        <div class="brand-logo">YC</div>
+        <div>
+          <div class="brand-title">Yogendra Chaudhary</div>
+          <div class="brand-subtitle">Portfolio Administration</div>
+        </div>
+      </a>
+    </div>
     <div class="nav-actions">
+      <a href="/" class="btn btn-secondary" title="Return to Portfolio Homepage">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        Back to Website
+      </a>
       <div class="status-badge">
         <div id="auth-status-dot" class="status-dot"></div>
         <span id="auth-status-text">Checking Auth...</span>
@@ -992,6 +1040,20 @@
       </div>
       <div class="card-description">Manage skill cards and methodology principles. You can enable or disable individual skills.</div>
       <div id="skills-container"></div>
+    </div>
+  </div>
+
+  <!-- Bottom Navigation & Return -->
+  <div style="margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--card-border); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+    <a href="/" class="btn btn-secondary" style="gap: 8px;" title="Back to Portfolio Website">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="19" y1="12" x2="5" y2="12"></line>
+        <polyline points="12 19 5 12 12 5"></polyline>
+      </svg>
+      ← Back to Portfolio Website
+    </a>
+    <div style="font-size: 12px; color: var(--text-muted);">
+      Portfolio Administration &bull; Yogendra Chaudhary
     </div>
   </div>
 </main>

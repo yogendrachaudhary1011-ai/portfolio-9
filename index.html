@@ -675,29 +675,32 @@
 
       // 5. Dynamic Images Sync
       if (CV.images) {
-        if (CV.images.avatar) {
-          document.querySelectorAll('img[src*="sHYLC5GLvyuqZRvQ"]').forEach(img => {
-            img.src = CV.images.avatar;
-            img.srcset = '';
+        const updateImgSrc = (selector, newSrc, dataAttr) => {
+          if (!newSrc) return;
+          const query = `${selector}, img[data-portfolio-img="${dataAttr}"]`;
+          document.querySelectorAll(query).forEach(img => {
+            img.dataset.portfolioImg = dataAttr;
+            if (img.getAttribute('src') !== newSrc || img.getAttribute('srcset') !== newSrc) {
+              img.removeAttribute('srcset');
+              img.setAttribute('srcset', newSrc);
+              img.srcset = newSrc;
+              img.setAttribute('src', newSrc);
+              img.src = newSrc;
+            }
           });
+        };
+
+        if (CV.images.avatar) {
+          updateImgSrc('img[src*="sHYLC5GLvyuqZRvQ"], #about [data-framer-background-image-wrapper="true"] > img, section[data-framer-name="About"] img', CV.images.avatar, 'avatar');
         }
         if (CV.images.project1) {
-          document.querySelectorAll('img[src*="JFlxur51MvdnXVwJcmocQgdbRz8"], img[src*="KXWpMKybppkBnLsGiuMplKlAf8"]').forEach(img => {
-            img.src = CV.images.project1;
-            img.srcset = '';
-          });
+          updateImgSrc('img[src*="JFlxur51MvdnXVwJcmocQgdbRz8"], img[src*="KXWpMKybppkBnLsGiuMplKlAf8"]', CV.images.project1, 'project1');
         }
         if (CV.images.project2) {
-          document.querySelectorAll('img[src*="3uqfpcZtUI0KOAlHMVjpapzRl8"]').forEach(img => {
-            img.src = CV.images.project2;
-            img.srcset = '';
-          });
+          updateImgSrc('img[src*="3uqfpcZtUI0KOAlHMVjpapzRl8"]', CV.images.project2, 'project2');
         }
         if (CV.images.project3) {
-          document.querySelectorAll('img[src*="Qz0PfMLlkZPgfWPWG0w1Aj6I8"]').forEach(img => {
-            img.src = CV.images.project3;
-            img.srcset = '';
-          });
+          updateImgSrc('img[src*="Qz0PfMLlkZPgfWPWG0w1Aj6I8"]', CV.images.project3, 'project3');
         }
         if (CV.images.favicon) {
           document.querySelectorAll('link[rel="icon"]').forEach(l => { l.href = CV.images.favicon; });
@@ -811,8 +814,9 @@
     fetch('/api/content')
       .then(res => res.ok ? res.json() : null)
       .then(data => {
-        if (data && data.name) {
+        if (data && (data.name || data.images)) {
           Object.assign(CV, data);
+          try { localStorage.setItem('portfolio_content_override', JSON.stringify(data)); } catch(e){}
           syncContent();
         }
       })
